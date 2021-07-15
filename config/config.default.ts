@@ -5,7 +5,7 @@
  * @Author: 杨宏旋
  * @Date: 2020-07-20 17:11:50
  * @LastEditors: 杨宏旋
- * @LastEditTime: 2021-07-15 10:55:36
+ * @LastEditTime: 2021-07-15 11:27:55
  * @Description:
  */
 import { EggAppConfig, EggAppInfo, PowerPartial } from 'egg'
@@ -130,37 +130,12 @@ export default (appInfo: EggAppInfo) => {
   }
   config.multipart = {
     mode: 'stream',
-    fileSize: '100mb', // 接收文件大小
+    fileSize: '1024mb', // 接收文件大小
     fileExtensions: [''],
   }
-  // config.oss = {
-  //   // 这里需要的东西去自己的服务器里看，我用的阿里云
-  //   client: {
-  //     accessKeyId: 'LTAI4FxRVefjbj135e2U64Ca',
-  //     accessKeySecret: 'Pl0fFapdG6xctDVpJyJgUcZDMl76O9',
-  //     bucket: 'adx-creative',
-  //     endpoint: 'http://oss-cn-beijing.aliyuncs.com',
-  //     timeout: 300000000,
-  //   },
-  // }
-  config.development = {
-    // overrideDefault: true,
-    // watchDirs: [
-    //   '/app/controller',
-    //   '/app/middleware',
-    //   '/app/router',
-    //   '/app/service',
-    //   '/app/extend',
-    //   '/app/model',
-    //   '/app/schedule',
-    //   '/app/types',
-    //   '/app/public',
-    //   '/app/schema',
-    //   '/app/validate',
-    //   '/config',
-    // ],
-    // ignoreDirs: ['/app/file'],
-  }
+  config.APPTYPE = BaseConfig.APPTYPE
+  config.USERTYPE = BaseConfig.USERTYPE
+  config.STATUSTYPE = BaseConfig.STATUSTYPE
   return {
     ...config,
   }

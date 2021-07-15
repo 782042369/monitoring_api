@@ -30,7 +30,7 @@ export default class User extends Service {
       ])
       return { pageList, count }
     } catch (error) {
-      ctx.logger.warn('user handleGetList error', error)
+      ctx.logger.info('user handleGetList error', error)
       return error
     }
   }
@@ -48,7 +48,7 @@ export default class User extends Service {
         .lean<ObjProps>()
       return list
     } catch (error) {
-      ctx.logger.warn('user handleGetAllList error', error)
+      ctx.logger.info('user handleGetAllList error', error)
       return error
     }
   }
@@ -64,7 +64,7 @@ export default class User extends Service {
     try {
       return await ctx.model.User.findOne(query).lean<ObjProps>()
     } catch (error) {
-      ctx.logger.warn('user handleGetOne error', error)
+      ctx.logger.info('user handleGetOne error', error)
       return error
     }
   }
@@ -78,7 +78,7 @@ export default class User extends Service {
       const result = data.save()
       return result
     } catch (error) {
-      ctx.logger.warn('user handleAddOne error', error)
+      ctx.logger.info('user handleAddOne error', error)
       return error
     }
   }
@@ -96,7 +96,7 @@ export default class User extends Service {
       )
       return result
     } catch (error) {
-      ctx.logger.warn('user handleUpdateOne error', error)
+      ctx.logger.info('user handleUpdateOne error', error)
       return error
     }
   }
@@ -116,7 +116,7 @@ export default class User extends Service {
       )
       return result
     } catch (error) {
-      ctx.logger.warn('user handleDeleteOne error', error)
+      ctx.logger.info('user handleDeleteOne error', error)
       return error
     }
   }

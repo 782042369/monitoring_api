@@ -1,0 +1,17 @@
+{
+  "extends": "eslint-config-egg/typescript",
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "rules": {
+    "semi": 0,
+    "array-bracket-spacing": "off",
+    "comma-dangle": "off",
+    "no-confusing-arrow": "off",
+    "arrow-parens": "off",
+    "no-case-declarations": "off",
+    "default-case": "off",
+    "@typescript-eslint/member-delimiter-style": "off",
+    "@typescript-eslint/semi": "off"
+  }
+}

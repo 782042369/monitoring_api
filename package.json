@@ -1,0 +1,74 @@
+{
+  "name": "monitoring-api-work",
+  "version": "0.0.1",
+  "description": "",
+  "private": true,
+  "egg": {
+    "typescript": true,
+    "declarations": true
+  },
+  "scripts": {
+    "start": "egg-scripts start --port 7070 --title=egg-server-monitoring-api-work --ignore-stderr",
+    "stop": "egg-scripts stop --title=egg-server-monitoring-api-work",
+    "dev": "egg-bin dev --port 7070",
+    "test-local": "egg-bin test",
+    "test": "npm run lint -- --fix && npm run test-local",
+    "cov": "egg-bin cov",
+    "tsc": "ets && tsc -p tsconfig.json",
+    "ci": "npm run lint && npm run cov && npm run tsc",
+    "prod": "npm run cov && npm run tsc && npm run start",
+    "autod": "autod",
+    "lint": "eslint . --ext .ts",
+    "clean": "ets clean"
+  },
+  "dependencies": {
+    "egg": "^2.29.1",
+    "egg-controller": "^0.3.47",
+    "egg-scripts": "^2.13.0",
+    "egg-validate": "^2.0.2"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.165",
+    "@types/mathjs": "^6.0.11",
+    "@types/node": "^14.14.21",
+    "@types/node-xlsx": "^0.15.1",
+    "@types/nodemailer": "^6.4.1",
+    "@types/supertest": "^2.0.10",
+    "autod": "^3.1.1",
+    "autod-egg": "^1.1.0",
+    "dayjs": "^1.9.6",
+    "egg-alinode": "^2.0.1",
+    "egg-bin": "^4.15.0",
+    "egg-ci": "^1.18.0",
+    "egg-cors": "^2.2.3",
+    "egg-helper": "^1.1.5",
+    "egg-jwt": "^3.1.7",
+    "egg-mongoose": "^3.3.1",
+    "eslint": "^6.8.0",
+    "eslint-config-egg": "^8.1.2",
+    "exceljs": "^4.1.1",
+    "koa-compress": "^5.0.1",
+    "koa-json-error": "^3.1.2",
+    "lodash": "^4.17.20",
+    "mathjs": "^7.6.0",
+    "node-xlsx": "^0.16.1",
+    "nodemailer": "^6.5.0",
+    "tslib": "^1.14.1",
+    "typescript": "^3.9.7"
+  },
+  "engines": {
+    "node": ">=8.9.0"
+  },
+  "ci": {
+    "version": "8"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "eslintIgnore": [
+    "coverage"
+  ],
+  "author": "",
+  "license": "MIT"
+}

@@ -3,7 +3,7 @@
  * @Author: 杨宏旋
  * @Date: 2020-07-20 17:11:50
  * @LastEditors: 杨宏旋
- * @LastEditTime: 2021-02-05 18:25:25
+ * @LastEditTime: 2021-07-15 13:04:11
  * @Description:
  */
 // import { Application } from 'egg'
@@ -45,30 +45,34 @@ type methodNameProps = 'post' | 'get' | 'put' | 'delete'
  * @param pathPrefix {string}
  * @class
  */
-export const SelfController = (pathPrefix?: string): ClassDecorator => (
-  targetClass
-): void => {
-  // 在controller上定义pathPrefix的元数据
-  // https://github.com/rbuckton/reflect-metadata
-  Reflect.defineMetadata(CONTROLLER_PREFIX, pathPrefix, targetClass)
-}
+export const SelfController =
+  (pathPrefix?: string): ClassDecorator =>
+  (targetClass): void => {
+    // 在controller上定义pathPrefix的元数据
+    // https://github.com/rbuckton/reflect-metadata
+    Reflect.defineMetadata(CONTROLLER_PREFIX, pathPrefix, targetClass)
+  }
 /**
  *
  * @param path 路径
  * @param requestMethod 请求方式
  * @param jwtFlag 是否开启jwt检测 1 开启 0 关闭
  */
-export const methodWrap = (
-  path: string,
-  requestMethod: methodNameProps,
-  jwtFlag = 1
-): MethodDecorator => (target, methodName): void => {
-  // 路由装饰器参数为空时，路由为方法名
-  const key = path
-    ? `${requestMethod}·${path}·${String(methodName)}·${jwtFlag}`
-    : `${requestMethod}·${String(methodName)}·/${String(methodName)}·${jwtFlag}`
-  methodMap.set(key, target)
-}
+export const methodWrap =
+  (
+    path: string,
+    requestMethod: methodNameProps,
+    jwtFlag = 1
+  ): MethodDecorator =>
+  (target, methodName): void => {
+    // 路由装饰器参数为空时，路由为方法名
+    const key = path
+      ? `${requestMethod}·${path}·${String(methodName)}·${jwtFlag}`
+      : `${requestMethod}·${String(methodName)}·/${String(
+          methodName
+        )}·${jwtFlag}`
+    methodMap.set(key, target)
+  }
 
 export default (app: Application): void => {
   const { router, jwt } = app

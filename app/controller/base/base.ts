@@ -4,7 +4,7 @@
  * @Author: 杨宏旋
  * @Date: 2020-07-20 17:55:43
  * @LastEditors: 杨宏旋
- * @LastEditTime: 2021-07-15 12:34:10
+ * @LastEditTime: 2021-07-21 19:03:30
  * @Description:
  */
 
@@ -78,5 +78,20 @@ export default class BaseController extends Controller {
       _id,
     })
     return userInfo
+  }
+  /**
+   * 生成随机串
+   * @param len
+   * @return
+   */
+  randomString(len) {
+    len = len || 7
+    const $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678'
+    const maxPos = $chars.length
+    let pwd = ''
+    for (let i = 0; i < len; i++) {
+      pwd += $chars.charAt(Math.floor(Math.random() * maxPos))
+    }
+    return pwd + Date.now()
   }
 }

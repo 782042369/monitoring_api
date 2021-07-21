@@ -4,6 +4,7 @@
 import 'egg';
 import ExportBaseBase from '../../../app/controller/base/base';
 import ExportBaseUserbase from '../../../app/controller/base/userbase';
+import ExportProjectIndex from '../../../app/controller/project/index';
 import ExportUserIndex from '../../../app/controller/user/index';
 import ExportUserLogin from '../../../app/controller/user/login';
 
@@ -12,6 +13,9 @@ declare module 'egg' {
     base: {
       base: ExportBaseBase;
       userbase: ExportBaseUserbase;
+    }
+    project: {
+      index: ExportProjectIndex;
     }
     user: {
       index: ExportUserIndex;

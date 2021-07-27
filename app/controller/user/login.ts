@@ -17,7 +17,7 @@ import { SelfController, methodWrap } from '../../router'
 
 @SelfController()
 export default class UserController extends BaseController {
-  @methodWrap('/api/login', 'post', 0)
+  @methodWrap('/api/v1/login', 'post', 0)
   public async index() {
     try {
       const { ctx, app } = this
@@ -32,16 +32,16 @@ export default class UserController extends BaseController {
           delete userInfo.passwd2
           const secret = app.jwt.sign(
             {
-              userInfo,
+              userInfo
             },
             app.config.jwt.secret,
             {
-              expiresIn: '168h',
+              expiresIn: '168h'
             }
           )
           this.success(0, '登录成功', {
             ...userInfo,
-            secret,
+            secret
           })
         }
       } else {

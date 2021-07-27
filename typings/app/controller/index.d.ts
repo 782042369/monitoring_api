@@ -7,6 +7,7 @@ import ExportBaseUserbase from '../../../app/controller/base/userbase';
 import ExportProjectIndex from '../../../app/controller/project/index';
 import ExportUserIndex from '../../../app/controller/user/index';
 import ExportUserLogin from '../../../app/controller/user/login';
+import ExportWebreportRepost from '../../../app/controller/webreport/repost';
 
 declare module 'egg' {
   interface IController {
@@ -20,6 +21,9 @@ declare module 'egg' {
     user: {
       index: ExportUserIndex;
       login: ExportUserLogin;
+    }
+    webreport: {
+      repost: ExportWebreportRepost;
     }
   }
 }

@@ -1,15 +1,15 @@
 /*
  * @Author: 杨宏旋
  * @Date: 2020-07-20 18:34:57
- * @LastEditors: 杨宏旋
- * @LastEditTime: 2021-07-15 10:40:43
+ * @LastEditors: yanghongxuan
+ * @LastEditTime: 2021-07-26 19:18:08
  * @Description:
  */
 import { Service } from 'egg'
 import { MongooseFilterQuery } from 'mongoose'
 import { ObjProps, ServicePageProps } from '../types'
 
-export default class User extends Service {
+export default class Project extends Service {
   /**
    * 用户列表
    * @param query 查询参数
@@ -19,18 +19,18 @@ export default class User extends Service {
     try {
       const { pageNo, limit, ...queryval } = query
       const [count, pageList] = await Promise.all([
-        ctx.model.User.countDocuments(queryval),
-        ctx.model.User.find(queryval)
+        ctx.model.Project.countDocuments(queryval),
+        ctx.model.Project.find(queryval)
           .sort({
-            updated: -1,
+            updated: -1
           })
           .skip((pageNo - 1) * limit)
           .limit(limit)
-          .lean<ObjProps>(),
+          .lean<ObjProps>()
       ])
       return { pageList, count }
     } catch (error) {
-      ctx.logger.info('user handleGetList error', error)
+      ctx.logger.info('project handleGetList error', error)
       return error
     }
   }
@@ -41,14 +41,14 @@ export default class User extends Service {
   public async handleGetAllList(query: ObjProps) {
     const { ctx } = this
     try {
-      const list = await ctx.model.User.find(query)
+      const list = await ctx.model.Project.find(query)
         .sort({
-          created: -1,
+          created: -1
         })
         .lean<ObjProps>()
       return list
     } catch (error) {
-      ctx.logger.info('user handleGetAllList error', error)
+      ctx.logger.info('project handleGetAllList error', error)
       return error
     }
   }
@@ -62,9 +62,9 @@ export default class User extends Service {
   ) {
     const { ctx } = this
     try {
-      return await ctx.model.User.findOne(query).lean<ObjProps>()
+      return await ctx.model.Project.findOne(query).lean<ObjProps>()
     } catch (error) {
-      ctx.logger.info('user handleGetOne error', error)
+      ctx.logger.info('project handleGetOne error', error)
       return error
     }
   }
@@ -74,11 +74,11 @@ export default class User extends Service {
   public async handleAddOne() {
     const { ctx } = this
     try {
-      const data = new ctx.model.User(ctx.request.body)
+      const data = new ctx.model.Project(ctx.request.body)
       const result = data.save()
       return result
     } catch (error) {
-      ctx.logger.info('user handleAddOne error', error)
+      ctx.logger.info('project handleAddOne error', error)
       return error
     }
   }
@@ -88,15 +88,15 @@ export default class User extends Service {
   public async handleUpdateOne(_id: string) {
     const { ctx } = this
     try {
-      const result = await ctx.model.User.updateOne(
+      const result = await ctx.model.Project.updateOne(
         {
-          _id,
+          _id
         },
         ctx.request.body
       )
       return result
     } catch (error) {
-      ctx.logger.info('user handleUpdateOne error', error)
+      ctx.logger.info('project handleUpdateOne error', error)
       return error
     }
   }
@@ -106,17 +106,17 @@ export default class User extends Service {
   async handleDeleteOne(_id: string) {
     const { ctx } = this
     try {
-      const result = await ctx.model.User.updateOne(
+      const result = await ctx.model.Project.updateOne(
         {
-          _id,
+          _id
         },
         {
-          status: 3,
+          status: 3
         }
       )
       return result
     } catch (error) {
-      ctx.logger.info('user handleDeleteOne error', error)
+      ctx.logger.info('project handleDeleteOne error', error)
       return error
     }
   }

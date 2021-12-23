@@ -2,7 +2,7 @@
  * @Author: 杨宏旋
  * @Date: 2020-07-20 17:48:58
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-23 09:41:24
+ * @LastEditTime: 2021-12-23 10:06:26
  * @Description:
  */
 import { MongooseTypes } from './types'
@@ -17,7 +17,6 @@ module.exports = (app: MongooseTypes) => {
       app_id: { type: String }, // 系统标识
       user_agent: { type: String }, // 用户浏览器信息标识
       ip: { type: String }, // 用户ip
-      mark_page: { type: String }, // 所有资源页面统一标识 html img css js 用户系统信息等
       mark_user: { type: String }, // 统一某一时间段用户标识
       mark_uv: { type: String }, // 统一uv标识
       url: { type: String }, // 访问url
@@ -42,9 +41,9 @@ module.exports = (app: MongooseTypes) => {
     },
     {
       versionKey: false,
-      timestamps: false
+      timestamps: { createdAt: 'createTime', updatedAt: false }
     }
   )
-  WebReportSchema.index({ create_time: 1 })
+  WebReportSchema.index({ create_time: 1, app_id: 1 })
   return conn.model('WebReport', WebReportSchema, 'web-report')
 }

@@ -2,14 +2,13 @@
  * @Author: 杨宏旋
  * @Date: 2020-07-20 18:34:57
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-23 09:41:43
+ * @LastEditTime: 2021-12-23 10:01:39
  * @Description:
  */
 import { Service } from 'egg'
 import { MongooseFilterQuery } from 'mongoose'
 import { ErrorCategoryEnum } from '../../enum/index'
 import { ObjProps, ServicePageProps } from '../../types'
-import { randomString } from '../../utils'
 
 export default class WebReport extends Service {
   /**
@@ -106,9 +105,7 @@ export default class WebReport extends Service {
         report.error_list = logInfo
       }
       report.app_id = query.appID
-      report.create_time = query.time
       report.ip = query.ip
-      report.mark_page = randomString()
       report.mark_user = query.markUser
       report.mark_uv = query.markUv
       report.url = query.url || ctx.headers.referer

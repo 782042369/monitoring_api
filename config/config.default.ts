@@ -5,7 +5,7 @@
  * @Author: 杨宏旋
  * @Date: 2020-07-20 17:11:50
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-07-26 18:43:49
+ * @LastEditTime: 2021-11-08 15:16:48
  * @Description:
  */
 import { EggAppConfig, EggAppInfo, PowerPartial } from 'egg'
@@ -41,7 +41,7 @@ export default (appInfo: EggAppInfo) => {
   //   secret: '05c1bfc8dce430470476c006504d9d305caba647',
   // }
   config.cors = {
-    origin: '*',
+    origin: (ctx) => ctx.get('origin'),
     credentials: true,
     allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH'
   }
@@ -49,8 +49,8 @@ export default (appInfo: EggAppInfo) => {
     csrf: {
       enable: false,
       ignoreJSON: true
-    }
-    // domainWhiteList: ['http://localhost:8000'],
+    },
+    domainWhiteList: ['http://localhost:3000']
   }
   config.httpclient = {
     request: {

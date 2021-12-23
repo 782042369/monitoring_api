@@ -1,9 +1,9 @@
-import { ErrorCategoryEnum, ErrorLevelEnum } from './../enum/index.d'
+import { ErrorCategoryEnum, ErrorLevelEnum } from '../enum'
 /*
  * @Author: 杨宏旋
  * @Date: 2020-07-23 16:47:19
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-07-27 10:12:55
+ * @LastEditTime: 2021-12-22 17:17:01
  * @Description:
  */
 export interface ObjProps {

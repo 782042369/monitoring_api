@@ -1,8 +1,8 @@
 /*
  * @Author: 杨宏旋
  * @Date: 2021-07-15 10:24:33
- * @LastEditors: 杨宏旋
- * @LastEditTime: 2021-07-15 12:42:14
+ * @LastEditors: yanghongxuan
+ * @LastEditTime: 2021-07-27 13:05:52
  * @Description:
  */
 /*
@@ -24,6 +24,8 @@ export default class UserController extends BaseController {
       const { email, passwd } = ctx.request.body
       const Md5PasswdVal = this.handlePwdToMd5(passwd)
       const userInfo = await ctx.service.user.handleGetOne({ email })
+      const arr = this.ctx.cookies
+      console.log('arr: ', arr)
       if (userInfo) {
         if (Md5PasswdVal !== userInfo?.passwd) {
           this.error(1, '用户名密码错误')

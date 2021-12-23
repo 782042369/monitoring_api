@@ -1,8 +1,8 @@
 /*
  * @Author: 杨宏旋
  * @Date: 2021-03-17 10:46:35
- * @LastEditors: 杨宏旋
- * @LastEditTime: 2021-03-18 14:16:02
+ * @LastEditors: yanghongxuan
+ * @LastEditTime: 2021-12-22 16:29:02
  * @Description:
  */
 export const handleTrend = (num: string | number, flag = true): string => {
@@ -35,4 +35,14 @@ export const thousandthFormat = (num: number): string => {
       return `${$1},`
     })
     .replace(/\.$/, '')
+}
+export const randomString = (len = 7) => {
+  len = len || 7
+  const $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678'
+  const maxPos = $chars.length
+  let pwd = ''
+  for (let i = 0; i < len; i++) {
+    pwd += $chars.charAt(Math.floor(Math.random() * maxPos))
+  }
+  return pwd + Date.now()
 }

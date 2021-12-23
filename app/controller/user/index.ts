@@ -2,7 +2,7 @@
  * @Author: 杨宏旋
  * @Date: 2021-07-15 10:22:04
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-07-27 10:05:19
+ * @LastEditTime: 2021-11-08 15:16:48
  * @Description:
  */
 import UserBaseController from '../base/userbase'
@@ -11,7 +11,7 @@ import { SelfController, methodWrap } from '../../router'
 @SelfController()
 export default class UserController extends UserBaseController {
   // 用户列表
-  @methodWrap('/api/v1/user/list', 'get')
+  @methodWrap('/api/v1/user/list', 'get', 0)
   public async list() {
     try {
       this.success(200, '用户列表查询成功')

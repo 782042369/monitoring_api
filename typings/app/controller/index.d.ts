@@ -7,6 +7,7 @@ import ExportBaseUserbase from '../../../app/controller/base/userbase';
 import ExportProjectIndex from '../../../app/controller/project/index';
 import ExportUserIndex from '../../../app/controller/user/index';
 import ExportUserLogin from '../../../app/controller/user/login';
+import ExportWebPvuvip from '../../../app/controller/web/pvuvip';
 import ExportWebReport from '../../../app/controller/web/report';
 
 declare module 'egg' {
@@ -23,6 +24,7 @@ declare module 'egg' {
       login: ExportUserLogin;
     }
     web: {
+      pvuvip: ExportWebPvuvip;
       report: ExportWebReport;
     }
   }

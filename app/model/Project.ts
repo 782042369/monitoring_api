@@ -2,7 +2,7 @@
  * @Author: 杨宏旋
  * @Date: 2021-07-22 14:45:20
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-07-27 10:23:56
+ * @LastEditTime: 2021-12-24 14:44:22
  * @Description:
  */
 import { MongooseTypes } from './types'
@@ -28,7 +28,7 @@ module.exports = (app: MongooseTypes) => {
       is_statisi_ajax: { type: Number, default: 0 }, // 是否统计页面Ajax性能资源 0：是 1：否
       is_statisi_resource: { type: Number, default: 0 }, // 是否统计页面加载资源性能信息 0：是 1：否
       is_statisi_system: { type: Number, default: 0 }, // 是否存储用户系统信息资源信息 0：是 1：否
-      is_statisi_error: { type: Number, default: 0 }, // 是否上报页面错误信息 0：是 1：否
+      is_statisi: { type: Number, default: 0 }, // 是否上报页面错误信息 0：是 1：否
       is_daily_use: { type: Number, default: 0 }, // 是否发送日报 0：是 1：否
       daliy_list: { type: Array, default: [] }, // 日报列表
       is_highest_use: { type: Number, default: 0 }, // 是否发送pv邮件 0：是 1：否
@@ -36,7 +36,8 @@ module.exports = (app: MongooseTypes) => {
       status: { type: Number, default: 1 } // 1 启用 2 停用 3 删除
     },
     {
-      versionKey: false
+      versionKey: false,
+      timestamps: { createdAt: true, updatedAt: true }
     }
   )
 

@@ -5,7 +5,7 @@
  * @Author: 杨宏旋
  * @Date: 2020-07-20 17:11:50
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-11-08 15:16:48
+ * @LastEditTime: 2021-12-24 11:00:39
  * @Description:
  */
 import { EggAppConfig, EggAppInfo, PowerPartial } from 'egg'
@@ -136,6 +136,30 @@ export default (appInfo: EggAppInfo) => {
   config.APPTYPE = BaseConfig.APPTYPE
   config.USERTYPE = BaseConfig.USERTYPE
   config.STATUSTYPE = BaseConfig.STATUSTYPE
+  // 执行pvuvip定时任务的时间间隔 每2分钟定时执行一次 (可更改)
+  config.pvuvip_task_minute_time = '0 */2 * * * *'
+  // 执行pvuvip定时任务的时间间隔 每天定时执行一次
+  config.pvuvip_task_day_time = '0 0 0 */1 * *'
+  // 执行ip地理位置转换的定时任务 每分钟定时执行一次
+  config.ip_task_time = '0 */1 * * * *'
+  // 信息数据清洗
+  config.report_task_time = '0 */1 * * * *'
+  // web浏览器端定时任务是否执行
+  config.is_web_task_run = true
+  // wx小程序端定时任务是否执行
+  config.is_wx_task_run = false
+  // 上报线程
+  config.report_thread = 10
+
+  // redis配置
+  config.redis = {
+    client: {
+      port: 6379, // Redis port
+      host: '127.0.0.1', // Redis host
+      password: '',
+      db: 0
+    }
+  }
   return {
     ...config
   }

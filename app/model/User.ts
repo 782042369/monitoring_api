@@ -2,7 +2,7 @@
  * @Author: 杨宏旋
  * @Date: 2020-07-20 17:48:58
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-07-27 10:16:25
+ * @LastEditTime: 2021-12-24 13:00:36
  * @Description:
  */
 import { MongooseTypes } from './types'
@@ -24,7 +24,7 @@ module.exports = (app: MongooseTypes) => {
     },
     {
       versionKey: false,
-      timestamps: false
+      timestamps: { createdAt: true, updatedAt: false }
     }
   )
   return conn.model('User', UserSchema, 'user')

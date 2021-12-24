@@ -1,4 +1,4 @@
-import { ErrorCategoryEnum, ErrorLevelEnum } from '../enum'
+import { CategoryEnum, ErrorLevelEnum } from '../enum'
 /*
  * @Author: 杨宏旋
  * @Date: 2020-07-23 16:47:19
@@ -34,7 +34,7 @@ export interface UserInfoProps {
 }
 
 export interface ReportProps {
-  category: ErrorCategoryEnum
+  category: CategoryEnum
   level: ErrorLevelEnum
   deviceInfo: string
   appID: string

@@ -2,12 +2,12 @@
  * @Author: 杨宏旋
  * @Date: 2020-07-20 18:34:57
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-23 10:01:39
+ * @LastEditTime: 2021-12-24 17:38:33
  * @Description:
  */
 import { Service } from 'egg'
 import { MongooseFilterQuery } from 'mongoose'
-import { ErrorCategoryEnum } from '../../enum/index'
+import { CategoryEnum } from '../../enum/index'
 import { ObjProps, ServicePageProps } from '../../types'
 
 export default class WebReport extends Service {
@@ -80,29 +80,30 @@ export default class WebReport extends Service {
         app_id: query.appID
       })
       if (system === undefined || system?.is_use !== 0) return {}
-
       const report = new ctx.model.WebReport()
+
       const logInfo = JSON.parse(log)
-      if (query.category === ErrorCategoryEnum.RESOURCE_ERROR) {
-        // 资源加载错误
+      if (query.category === CategoryEnum.RESOURCE) {
+        // 资源加载
         report.type = 4
-        report.resource_list = logInfo
+        report.log_list = logInfo
       } else if (
-        // 请求错误
-        query.category === ErrorCategoryEnum.AJAX_ERROR ||
-        query.category === ErrorCategoryEnum.CROSS_SCRIPT_ERROR
+        query.category === CategoryEnum.AJAX ||
+        query.category === CategoryEnum.CROSS_SCRIPT
       ) {
+        // 请求日志上报
         report.type = 2
-        report.error_list = logInfo
-      } else if (query.category === ErrorCategoryEnum.PERFORMANCE) {
+        report.log_list = logInfo
+      } else if (query.category === CategoryEnum.PERFORMANCE) {
         // 性能上报
-        const { resourceList, ...performance } = logInfo
+        const { resourceList, performance } = logInfo
         report.type = 1
         report.performance = performance
         report.resource_list = resourceList
       } else {
+        // js 等其他代码
         report.type = 3
-        report.error_list = logInfo
+        report.log_list = logInfo
       }
       report.app_id = query.appID
       report.ip = query.ip
@@ -111,6 +112,7 @@ export default class WebReport extends Service {
       report.url = query.url || ctx.headers.referer
       report.pre_url = query.preUrl
       report.device = JSON.parse(device)
+      report.is_first_in = query.first
       selector && (report.selector = selector)
       const result = report.save()
       return result

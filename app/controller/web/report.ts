@@ -2,7 +2,7 @@
  * @Author: 杨宏旋
  * @Date: 2021-07-15 10:22:04
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-22 16:33:34
+ * @LastEditTime: 2021-12-23 17:25:55
  * @Description:
  */
 import BaseController from '../base/base'
@@ -10,7 +10,7 @@ import { SelfController, methodWrap } from '../../router'
 
 // const lru = new LRUCache(15)
 @SelfController()
-export default class UserController extends BaseController {
+export default class Controller extends BaseController {
   // 用户列表
   @methodWrap('/api/up.gif', 'get', 0)
   public async list() {

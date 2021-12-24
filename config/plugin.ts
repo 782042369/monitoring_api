@@ -1,8 +1,8 @@
 /*
  * @Author: 杨宏旋
  * @Date: 2020-07-20 17:11:50
- * @LastEditors: 杨宏旋
- * @LastEditTime: 2021-07-15 10:55:29
+ * @LastEditors: yanghongxuan
+ * @LastEditTime: 2021-12-24 09:37:24
  * @Description:
  */
 import { EggPlugin } from 'egg'
@@ -15,31 +15,31 @@ const plugin: EggPlugin = {
   // },
   mongoose: {
     enable: true,
-    package: 'egg-mongoose',
+    package: 'egg-mongoose'
   },
   cors: {
     enable: true,
-    package: 'egg-cors',
+    package: 'egg-cors'
   },
   jwt: {
     enable: true,
-    package: 'egg-jwt',
+    package: 'egg-jwt'
   },
   validate: {
     enable: true,
-    package: 'egg-validate',
+    package: 'egg-validate'
   },
   helper: {
     enable: true,
-    package: 'egg-helper',
+    package: 'egg-helper'
   },
   aop: {
     enable: true,
-    package: 'egg-aop',
+    package: 'egg-aop'
   },
   controller: {
     enable: true,
-    package: 'egg-controller',
+    package: 'egg-controller'
   },
   // alinode: {
   //   enable: true,
@@ -47,8 +47,12 @@ const plugin: EggPlugin = {
   // },
   logrotator: {
     enable: true,
-    package: 'egg-logrotator',
+    package: 'egg-logrotator'
   },
+  redis: {
+    enable: true,
+    package: 'egg-redis'
+  }
 }
 
 export default plugin

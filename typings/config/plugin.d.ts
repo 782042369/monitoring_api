@@ -21,6 +21,7 @@ import 'egg-validate';
 import 'egg-helper';
 import 'egg-aop';
 import 'egg-controller';
+import 'egg-redis';
 import { EggPluginItem } from 'egg';
 declare module 'egg' {
   interface EggPlugin {
@@ -43,5 +44,6 @@ declare module 'egg' {
     helper?: EggPluginItem;
     aop?: EggPluginItem;
     controller?: EggPluginItem;
+    redis?: EggPluginItem;
   }
 }

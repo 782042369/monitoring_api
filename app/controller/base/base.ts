@@ -4,7 +4,7 @@
  * @Author: 杨宏旋
  * @Date: 2020-07-20 17:55:43
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-07-27 10:18:58
+ * @LastEditTime: 2021-12-24 10:48:16
  * @Description:
  */
 
@@ -12,19 +12,14 @@ import { Controller, Context } from 'egg'
 import validateRule from '../../validate'
 import { validateRuleType, UserInfoProps } from '../../types/index'
 import * as crypto from 'crypto'
-import path = require('path')
-import * as fs from 'fs'
+
 // const MapData = new Map()
 
 export default class BaseController extends Controller {
-  cacheIpJson: {
-    [x: string]: { city: string; province: string }
-  }
   validateRule: validateRuleType
   constructor(ctx: Context) {
     super(ctx)
     this.validateRule = validateRule
-    this.ipCityFileCache()
   }
   /**
    *
@@ -97,29 +92,5 @@ export default class BaseController extends Controller {
       pwd += $chars.charAt(Math.floor(Math.random() * maxPos))
     }
     return pwd + Date.now()
-  }
-  /**
-   * 获取ip地址缓存
-   */
-  async ipCityFileCache() {
-    this.cacheIpJson = {}
-    const { app } = this
-    try {
-      const beginTime = new Date().getTime()
-      const filepath = path.resolve(
-        __dirname,
-        '../../cache/web_ip_city_cache_file.txt'
-      )
-      const ipDatas = fs.readFileSync(filepath, { encoding: 'utf8' })
-      const result = JSON.parse(`{${ipDatas.slice(0, -1)}}`)
-      this.cacheIpJson = result
-      app.logger.info(
-        `--------读取文件城市Ip地址耗时为 ${
-          new Date().getTime() - beginTime
-        }ms-------`
-      )
-    } catch (err) {
-      this.cacheIpJson = {}
-    }
   }
 }

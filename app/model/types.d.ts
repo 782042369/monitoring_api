@@ -2,7 +2,7 @@
  * @Author: 杨宏旋
  * @Date: 2021-07-15 10:15:20
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-24 10:06:10
+ * @LastEditTime: 2021-12-27 10:55:12
  * @Description:
  */
 /*
@@ -20,7 +20,7 @@ type MongooseSingleton = {
 
 export interface MongooseTypes {
   models: {
-    [key: string]: (appid: string) => mongoose.Model<T>
+    [key: string]: (appid: string) => mongoose.Model<any>
   }
   mongoose: typeof mongoose
   mongooseDB: MongooseSingleton

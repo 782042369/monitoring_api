@@ -2,11 +2,10 @@
  * @Author: 杨宏旋
  * @Date: 2020-07-20 18:34:57
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-24 17:38:33
+ * @LastEditTime: 2021-12-27 14:01:04
  * @Description:
  */
 import { Service } from 'egg'
-import { MongooseFilterQuery } from 'mongoose'
 import { CategoryEnum } from '../../enum/index'
 import { ObjProps, ServicePageProps } from '../../types'
 
@@ -58,9 +57,7 @@ export default class WebReport extends Service {
    * 用户详情
    * @param query 查询参数
    */
-  public async handleGetOne(
-    query: MongooseFilterQuery<Pick<any, string | number | symbol>> | undefined
-  ) {
+  public async handleGetOne(query) {
     const { ctx } = this
     try {
       return await ctx.model.WebReport.findOne(query).lean<ObjProps>()
@@ -75,7 +72,7 @@ export default class WebReport extends Service {
   public async handleAddOne() {
     const { ctx } = this
     try {
-      const { device, log, selector = null, ...query }: any = ctx.query
+      const { log, selector = null, device, ...query }: any = ctx.query
       const system: any = await this.service.project.handleGetOne({
         app_id: query.appID
       })
@@ -111,9 +108,10 @@ export default class WebReport extends Service {
       report.mark_uv = query.markUv
       report.url = query.url || ctx.headers.referer
       report.pre_url = query.preUrl
-      report.device = JSON.parse(device)
+      report.user_agent = ctx.headers['user-agent']
       report.is_first_in = query.first
-      selector && (report.selector = selector)
+      report.device = JSON.parse(device)
+      report.selector = selector || ''
       const result = report.save()
       return result
     } catch (error) {

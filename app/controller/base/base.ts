@@ -4,7 +4,7 @@
  * @Author: 杨宏旋
  * @Date: 2020-07-20 17:55:43
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-24 10:48:16
+ * @LastEditTime: 2021-12-27 14:01:50
  * @Description:
  */
 
@@ -63,7 +63,7 @@ export default class BaseController extends Controller {
    * @param content string | Buffer
    * @return {string} string
    */
-  public md5(content: string | Buffer) {
+  public md5(content: string | Buffer): string {
     return crypto.createHash('md5').update(content).digest('hex')
   }
   /**
@@ -72,7 +72,7 @@ export default class BaseController extends Controller {
    */
   public async GetUserByjwt(): Promise<UserInfoProps> {
     const { ctx, app } = this
-    const token = ctx.request.header.authorization.split(' ')[1]
+    const token = (ctx.request.header.authorization as string).split(' ')[1]
     const { _id }: any = ctx.app.jwt.verify(token, app.config.jwt.secret)
     const userInfo: UserInfoProps = await ctx.service.user.handleGetOne({
       _id
@@ -84,7 +84,7 @@ export default class BaseController extends Controller {
    * @param {number} len number
    * @return {string} string
    */
-  randomAppIdString(len = 5) {
+  randomAppIdString(len = 5): string {
     const $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678'
     const maxPos = $chars.length
     let pwd = ''

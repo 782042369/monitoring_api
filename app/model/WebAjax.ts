@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2021-12-24 10:02:09
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-24 15:17:02
+ * @LastEditTime: 2021-12-27 13:44:51
  * @Description:
  */
 module.exports = (app: {
@@ -23,10 +23,22 @@ module.exports = (app: {
       duration: { type: Number, default: 0 }, // AJAX响应时间 单位：ms
       decoded_body_size: { type: Number, default: 0 }, // 返回字段大小  单位：B
       call_url: { type: String }, // 调用页面的URL
-      mark_page: { type: String }, // 所有资源页面统一标识 html img css js 用户系统信息等
       mark_user: { type: String }, // 统一某一时间段用户标识
       selector: { type: String, default: '' }, // 选择器层级
-      status: { type: Number } // 请求状态
+      status: { type: Number }, // 请求状态
+      device: {
+        net: { type: String }, // 网络版本
+        fingerprint: { type: String }, // 浏览器指纹
+        browser: {
+          name: { type: String, default: '' },
+          version: { type: String, default: '' },
+          major: { type: String, default: '' }
+        },
+        os: {
+          name: { type: String, default: '' },
+          version: { type: String, default: '' }
+        }
+      }
     },
     {
       versionKey: false,

@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2021-12-24 10:37:24
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-24 17:37:13
+ * @LastEditTime: 2021-12-27 14:26:06
  * @Description: 上报日志按应用级别做数据清洗
  */
 
@@ -10,14 +10,22 @@ import { Service } from 'egg'
 import * as path from 'path'
 import * as fs from 'fs'
 import * as url from 'url'
+import * as UAParser from 'ua-parser-js'
+import { Context } from 'egg'
+import * as mongoose from 'mongoose'
+import { ReportInfoProps, ResourceListProps } from '../../types'
+
 export default class Project extends Service {
   cacheIpJson: {
     [x: string]: { city: string; province: string }
   }
   cacheJson: {}
-  cacheArr: never[]
+  cacheArr: string[]
   system: {}
-  constructor(params) {
+  models: {
+    [key: string]: (appid: string) => mongoose.Model<any>
+  }
+  constructor(params: Context<any>) {
     super(params)
     this.cacheJson = {}
     this.cacheIpJson = {}
@@ -25,6 +33,7 @@ export default class Project extends Service {
     this.system = {}
     // 缓存一次ip地址库信息
     this.ipCityFileCache()
+    this.models = (this.app as any).models
   }
   /**
    * 获取ip地址缓存
@@ -64,12 +73,12 @@ export default class Project extends Service {
         .sort({ createdAt: 1 })
         .exec()
       app.logger.info(
-        `-------------savaDataCleaningByDimension 查询web端数据库是否可用---${datas.length}-------`
+        `-------------savaDataCleaningByDimension，定时每分钟清洗日志，查询数据库是否可用---一共有${datas.length}条数据-------`
       )
       // 储存数据
       this.commonSaveDatas(datas)
     } catch (err) {
-      // (app as any).models.restartMongodbs('', this.ctx, err)
+      // this.models.restartMongodbs('', this.ctx, err)
     }
   }
   public async commonSaveDatas(datas: any[]) {
@@ -85,103 +94,94 @@ export default class Project extends Service {
         const newSpit = datas.splice(0, number)
         if (datas.length) {
           this.saveDataToDb(newSpit)
-        } else {
-          this.saveDataToDb(newSpit)
         }
       }
     }
   }
 
   // 存储数据
-  async saveDataToDb(data) {
-    if (!data && !data.length) return
-
+  async saveDataToDb(data: any[]) {
+    const { app } = this
     // 遍历数据
-    data.forEach(async (item) => {
-      let system: any = {}
-      // 做一次appId缓存
-      if (this.cacheJson[item.app_id]) {
-        system = this.cacheJson[item.app_id]
-      } else {
-        system = await this.service.project.handleGetOne({
-          app_id: item.app_id
-        })
-        this.cacheJson[item.app_id] = system
-      }
+    try {
+      for (let i = 0; i < data.length; i++) {
+        const item = data[i]
+        let system: any = {}
+        // 做一次appId缓存
+        if (this.cacheJson[item.app_id]) {
+          system = this.cacheJson[item.app_id]
+        } else {
+          system = await this.service.project.handleGetOne({
+            app_id: item.app_id
+          })
+          this.cacheJson[item.app_id] = system
+        }
 
-      // 是否禁用上报
-      if (system.is_use !== 0) return
+        // 是否禁用上报
+        if (system.is_use !== 0) return
 
-      const querytype = item.type || 1
-      const processedData = await this.handleData({
-        type: item.type,
-        appId: item.app_id,
-        ip: item.ip,
-        markUser: item.mark_user || '',
-        markUv: item.mark_uv,
-        url: item.url,
-        preUrl: item.pre_url,
-        performance: item.performance,
-        log_list: item.log_list,
-        resource_list: item.resource_list,
-        isFristIn: item.is_first_in,
-        device: item.device,
-        selector: item.selector
-      })
-      // 页面级别
-      if (system.is_statisi_pages === 0 && querytype === 1) {
-        await this.savePages(processedData, system.slow_page_time)
+        const querytype = item.type || 1
+        const parser = new UAParser(item.user_agent)
+        const result = parser.getResult()
+        const { w, h, ...device } = item.device
+        const processedData: ReportInfoProps = {
+          type: item.type,
+          app_id: item.app_id,
+          ip: item.ip,
+          markUser: item.mark_user || '',
+          markUv: item.mark_uv,
+          url: item.url,
+          pre_url: item.pre_url,
+          performance: item.performance,
+          log_list: item.log_list,
+          resource_list: item.resource_list,
+          isFristIn: item.is_first_in,
+          selector: item.selector,
+          user_agent: item.user_agent,
+          device: {
+            browser: result.browser,
+            os: result.os,
+            w,
+            h,
+            ...device
+          }
+        }
+        // 页面级别
+        if (system.is_statisi_pages === 0 && querytype === 1) {
+          await this.savePages(processedData, system.slow_page_time)
+        }
+        // 资源级别
+        if (system.is_statisi_resource === 0 && querytype === 1) {
+          this.forEachResources(processedData, system)
+        }
+        // 请求类日志
+        if (system.is_statisi_ajax === 0 && querytype === 2) {
+          await this.saveAjaxs(processedData, system.slow_ajax_time)
+        }
+        // 错误类日志
+        if (system.is_statisi === 0 && [3, 4].includes(querytype)) {
+          await this.saveErrors(processedData)
+        }
+        if (system.is_statisi_system === 0) {
+          await this.saveEnvironment(processedData)
+        }
+        if (querytype) {
+          await this.app.redis.set('web_task_begin_time', item.createdAt)
+        }
       }
-      // // 资源级别
-      if (system.is_statisi_resource === 0 && querytype === 1) {
-        this.forEachResources(processedData, system)
-      }
-      // 请求类日志
-      if (system.is_statisi_ajax === 0 && querytype === 2) {
-        await this.saveAjaxs(processedData, system.slow_ajax_time)
-      }
-      // 错误类日志
-      if (system.is_statisi === 0 || [3, 4].includes(querytype)) {
-        await this.saveErrors(processedData)
-      }
-      // if (system.is_statisi_system === 0) {await this.saveEnvironment(processedData)}
-      if (querytype) {
-        await this.app.redis.set('web_task_begin_time', item.createdAt)
-      }
-    })
-  }
-  // 数据操作层
-  async handleData(query) {
-    const type = query.type || 1
-
-    let item = {
-      app_id: query.appId,
-      ip: query.ip,
-      mark_user: query.markUser || '',
-      mark_uv: query.markUv || '',
-      url: query.url,
-      ...query
+    } catch (error) {
+      app.logger.error('saveDataToDb 数据错误', error)
     }
-
-    if (type === 1) {
-      // 页面级性能
-      item = Object.assign(item, {
-        is_first_in: query.isFristIn ? 2 : 1,
-        pre_url: query.preUrl,
-        performance: query.performance
-      })
-    }
-    return item
   }
   // 储存网页性能数据
-  async savePages(item, slowPageTime = 5) {
+  async savePages(item: ReportInfoProps, slowPageTime = 5) {
     const { app } = this
     try {
       const newurl = url.parse(item.url)
       const newName = `${newurl.protocol}//${newurl.host}${newurl.pathname}${
         newurl.hash ? newurl.hash : ''
       }`
-      const pages = (app as any).models.WebPages(item.app_id)()
+      const pages = new (this.models.WebPages(item.app_id))()
       const performance = item.performance
       if (performance && performance?.loadPageTime > 0) {
         slowPageTime = slowPageTime * 1000
@@ -198,9 +198,9 @@ export default class Project extends Service {
         pages.app_id = item.app_id
         pages.url = newName
         pages.pre_url = item.pre_url
-        pages.is_first_in = item.is_first_in
-        pages.mark_page = item.mark_page
-        pages.mark_user = item.mark_user
+        pages.is_first_in = item.isFristIn
+        pages.mark_user = item.markUser
+        pages.device = item.device
         pages.total_res_size = totalSize
         pages.speed_type = speedType
         pages.resource_list = sourslist
@@ -222,31 +222,39 @@ export default class Project extends Service {
   }
 
   // // 根据资源类型存储不同数据
-  forEachResources(data, system) {
+  forEachResources(
+    data: ReportInfoProps,
+    system: {
+      is_statisi_resource: number
+      slow_css_time: number
+      slow_js_time: number
+      slow_img_time: number
+    }
+  ) {
     if (!data?.resource_list || !data?.resource_list.length) return
 
     // 遍历所有资源进行存储
-    data.resource_list.forEach((item) => {
+    data.resource_list.forEach(async (item) => {
       if (system.is_statisi_resource === 0) {
-        this.saveResours(data, item, system)
+        await this.saveResours(data, item, system)
       }
     })
   }
   // // 存储ajax信息
-  async saveAjaxs(data, slowAjaxTime = 2) {
+  async saveAjaxs(data: ReportInfoProps, slowAjaxTime = 2) {
     const { logother } = data.log_list
-    const { app } = this
     const newurl = url.parse(logother.path)
     const newName = newurl.protocol + '//' + newurl.host + newurl.pathname
     let duration = Math.abs(logother.duration || 0)
     if (duration > 60000) duration = 60000
     slowAjaxTime = slowAjaxTime * 1000
     const speedType = duration >= slowAjaxTime ? 2 : 1
-    const ajaxs = (app as any).models.WebAjaxs(data.app_id)()
+    const ajaxs = new (this.models.WebAjaxs(data.app_id))()
     ajaxs.app_id = data.app_id
-    ajaxs.mark_user = data.mark_user
+    ajaxs.mark_user = data.markUser
     ajaxs.selector = data.selector
     ajaxs.call_url = data.url
+    ajaxs.device = data.device
     ajaxs.speed_type = speedType
     ajaxs.url = newName
     ajaxs.method = logother.method
@@ -257,8 +265,15 @@ export default class Project extends Service {
   }
 
   // // 储存网页资源性能数据
-  async saveResours(data, item, system) {
-    const { app } = this
+  async saveResours(
+    data: ReportInfoProps,
+    item: ResourceListProps,
+    system: {
+      slow_css_time: number
+      slow_js_time: number
+      slow_img_time: number
+    }
+  ) {
     let slowTime = 2
     let speedType = 1
     let duration = Math.abs(item.duration || 0)
@@ -280,90 +295,104 @@ export default class Project extends Service {
 
     const newurl = url.parse(item.name)
     const newName = newurl.protocol + '//' + newurl.host + newurl.pathname
-
-    const resours = (app as any).models.WebResource(data.app_id)()
+    const resours = new (this.models.WebResource(data.app_id))()
     resours.app_id = data.app_id
     resours.url = item.name
     resours.call_url = data.url
     resours.speed_type = speedType
     resours.name = newName
-    resours.method = item.method
-    resours.type = item.type
     resours.duration = duration
+    resours.method = item.method
     resours.decoded_body_size = item.decodedBodySize
     resours.next_hop_protocol = item.nextHopProtocol
-    resours.mark_user = data.mark_user
+    resours.mark_user = data.markUser
     await resours.save()
   }
 
   // 存储错误信息
-  async saveErrors(data) {
-    const { app } = this
+  async saveErrors(data: ReportInfoProps) {
     if (!data?.log_list) return
-    const errors = (app as any).models.WebErrors(data.app_id)()
+    const errors = new (this.models.WebErrors(data.app_id))()
     errors.app_id = data.app_id
     errors.msg = data.log_list.errorstack
     errors.col = data.log_list.errorcol
     errors.line = data.log_list.errorline
     errors.call_url = data.url
-    errors.mark_user = data.mark_user
+    errors.mark_user = data.markUser
     errors.selector = data.selector
+    errors.device = data.device
     await errors.save()
   }
 
   // //  储存用户的设备信息
-  // async saveEnvironment(data) {
-  //   const result = parser.getResult()
-  //   const ip = data.ip
+  async saveEnvironment(data: ReportInfoProps) {
+    const { app } = this
 
-  //   if (!ip) return
-  //   let copyip = ip.split('.')
-  //   copyip = `${copyip[0]}.${copyip[1]}.${copyip[2]}`
-  //   let datas = null
+    const ip = data.ip
 
-  //   if (this.cacheIpJson[copyip]) {
-  //     datas = this.cacheIpJson[copyip]
-  //   } else if (app.config.ip_redis_or_mongodb === 'redis') {
-  //     // 通过reids获得用户IP对应的地理位置信息
-  //     datas = await app.redis.get(copyip)
-  //     if (datas) {
-  //       datas = JSON.parse(datas)
-  //       this.cacheIpJson[copyip] = datas
-  //       this.saveIpDatasInFile(copyip, {
-  //         city: datas.city,
-  //         province: datas.province
-  //       })
-  //     }
-  //   } else if (app.config.ip_redis_or_mongodb === 'mongodb') {
-  //     // 通过mongodb获得用户IP对应的地理位置信息
-  //     datas = await this.ctx.model.IpLibrary.findOne({ ip: copyip })
-  //       .read('sp')
-  //       .exec()
-  //     if (datas) {
-  //       this.cacheIpJson[copyip] = datas
-  //       this.saveIpDatasInFile(copyip, {
-  //         city: datas.city,
-  //         province: datas.province
-  //       })
-  //     }
-  //   }
+    if (!ip) return
+    const copyipArr = ip.split('.')
+    const copyip = `${copyipArr[0]}.${copyipArr[1]}.${copyipArr[2]}`
+    let datas: {
+      city: string
+      province: string
+    } = {
+      city: '',
+      province: ''
+    }
+    if (!data.ip || data.ip !== '127.0.0.1') {
+      this.saveIpDatasInFile(copyip, {
+        city: '',
+        province: ''
+      })
+    } else if (this.cacheIpJson[copyip]) {
+      datas = this.cacheIpJson[copyip]
+    } else if (app.config.ip_redis_or_mongodb === 'redis') {
+      // 通过reids获得用户IP对应的地理位置信息
+      const info = await app.redis.get(copyip)
 
-  //   const environment = (app as any).models.WebEnvironment(data.app_id)()
-  //   environment.app_id = data.app_id
-  //   environment.url = data.url
-  //   environment.mark_user = data.mark_user
-  //   environment.mark_uv = data.mark_uv
-  //   environment.browser = result.browser.name || ''
-  //   environment.borwser_version = result.browser.version || ''
-  //   environment.system = result.os.name || ''
-  //   environment.system_version = result.os.version || ''
-  //   environment.ip = data.ip
-  //   environment.county = data.county
-  //   environment.province = data.province
-  //   if (datas) {
-  //     environment.province = datas.province
-  //     environment.city = datas.city
-  //   }
-  //   await environment.save()
-  // }
+      if (info) {
+        datas = JSON.parse(info)
+        this.cacheIpJson[copyip] = datas
+        this.saveIpDatasInFile(copyip, {
+          city: datas.city,
+          province: datas.province
+        })
+      }
+    }
+
+    const environment = new (this.models.WebEnvironment(data.app_id))()
+    environment.app_id = data.app_id
+    environment.url = data.url
+    environment.mark_user = data.markUser
+    environment.mark_uv = data.markUv
+    environment.browser = data.device.browser.name || ''
+    environment.borwser_version = data.device.browser.version || ''
+    environment.system = data.device.os.name || ''
+    environment.system_version = data.device.os.version || ''
+    environment.system_w = data.device.w || 0
+    environment.system_h = data.device.h || 0
+    environment.system_net = data.device.net || ''
+    environment.system_lan = data.device.lan || ''
+    environment.ip = data.ip
+    // 处理 127.0.0.1 请求 不做城市判断
+    if (datas?.city) {
+      environment.province = datas.province
+      environment.city = datas.city
+    }
+    console.log('environment: ', environment)
+    await environment.save()
+  }
+  // 缓存存到cache文件
+  saveIpDatasInFile(copyip: string, json: { city: string; province: string }) {
+    if (this.cacheIpJson[copyip]) return
+    this.cacheIpJson[copyip] = json
+    const filepath = path.resolve(
+      __dirname,
+      `../../cache/${this.app.config.ip_city_cache_file.web}`
+    )
+    const str = `"${copyip}":${JSON.stringify(json)},`
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    fs.appendFile(filepath, str, { encoding: 'utf8' }, () => {})
+  }
 }

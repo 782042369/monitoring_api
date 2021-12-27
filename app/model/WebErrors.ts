@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2021-07-21 17:29:25
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-24 15:53:50
+ * @LastEditTime: 2021-12-27 13:56:29
  * @Description:
  */
 import { MongooseTypes } from './types'
@@ -21,7 +21,23 @@ module.exports = (app: MongooseTypes) => {
       col: { type: String }, // js错误列号
       line: { type: String }, // js错误行号
       mark_user: { type: String }, // 统一某一时间段用户标识
-      selector: { type: String, default: '' } // 选择器层级
+      selector: { type: String, default: '' }, // 选择器层级
+      device: {
+        w: { type: Number }, // 屏幕宽度
+        h: { type: Number }, // 屏幕高度
+        lan: { type: String }, // 语言版本
+        net: { type: String }, // 网络版本
+        fingerprint: { type: String }, // 浏览器指纹
+        browser: {
+          name: { type: String, default: '' },
+          version: { type: String, default: '' },
+          major: { type: String, default: '' }
+        },
+        os: {
+          name: { type: String, default: '' },
+          version: { type: String, default: '' }
+        }
+      }
     },
     {
       versionKey: false,

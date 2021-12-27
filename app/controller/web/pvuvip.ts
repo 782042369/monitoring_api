@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2021-12-23 17:25:44
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-24 17:25:26
+ * @LastEditTime: 2021-12-27 10:02:50
  * @Description:
  */
 import BaseController from '../base/base'
@@ -44,10 +44,10 @@ export default class Controller extends BaseController {
   //   this.groupData(datas, 1, query, endTime)
   // }
   // 用户列表
-  @methodWrap('/api/uvpvtast', 'get', 0)
+  @methodWrap('/api/uvpvtask', 'get', 0)
   // 某日概况
   async getPvUvIpSurveyOne() {
-    // const { ctx } = this
+    const { ctx } = this
     try {
       // const query = ctx.request.query
       // const appId = query.appId
@@ -56,7 +56,7 @@ export default class Controller extends BaseController {
       // if (!appId) throw new Error('pvuvip概况统计：appId不能为空')
       // if (!beginTime) throw new Error('pvuvip概况统计：beginTime不能为空')
       // if (!endTime) throw new Error('pvuvip概况统计：endTime不能为空')
-
+      ctx.service.web.reportTask.savaDataCleaningByDimension()
       this.success(200, 'ok')
     } catch (error) {
       this.error(500, `用户列表查询失败，${error}`, error)

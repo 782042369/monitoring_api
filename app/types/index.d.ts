@@ -3,7 +3,7 @@ import { CategoryEnum, ErrorLevelEnum } from '../enum'
  * @Author: 杨宏旋
  * @Date: 2020-07-23 16:47:19
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-22 17:17:01
+ * @LastEditTime: 2021-12-27 13:52:25
  * @Description:
  */
 export interface ObjProps {
@@ -44,4 +44,53 @@ export interface ReportProps {
   markUser: string
   markUv: string
   selector?: string
+}
+export interface ResourceListProps {
+  duration: number
+  initiatorType: string
+  name: string
+  method: string
+  decodedBodySize: number
+  nextHopProtocol: string
+  redirectTime: string
+  dnsTime: string
+  tcpTime: string
+  ttfbTime: string
+  responseTime: string
+  reqTotalTime: string
+}
+export interface ReportInfoProps {
+  type: number
+  app_id: string
+  ip: string
+  markUser: string
+  markUv: string
+  url: string
+  pre_url: string
+  performance: { [x: string]: string | number }
+  isFristIn: number
+  user_agent: string
+  resource_list: ResourceListProps[]
+  selector: string
+  log_list: {
+    logother: {
+      method: string
+      logotherL: ObjProps
+      decodedBodySize: number
+      duration: number
+      status: number
+      path: string
+    }
+    [x: string]: string | number
+  }
+  device: {
+    w: number
+    h: number
+    browser: UAParser.IBrowser
+    os: UAParser.IOS
+    lan: string
+    net: string
+    orientation: string
+    fingerprint: string
+  }
 }

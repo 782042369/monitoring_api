@@ -2,7 +2,7 @@
  * @Author: 杨宏旋
  * @Date: 2020-07-20 17:48:58
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-24 15:26:54
+ * @LastEditTime: 2021-12-27 11:30:54
  * @Description:
  */
 import { MongooseTypes } from './types'
@@ -27,14 +27,10 @@ module.exports = (app: MongooseTypes) => {
       device: {
         w: { type: Number }, // 屏幕宽度
         h: { type: Number }, // 屏幕高度
-        type: { type: String }, // 设备
-        os: { type: String }, // 设备操作系统
-        osv: { type: String }, // 设备操作系统版本
         lan: { type: String }, // 语言版本
         net: { type: String }, // 网络版本
         orientation: { type: String }, // 横屏竖屏
-        fingerprint: { type: String }, // 浏览器指纹
-        browser: { type: Mixed } // 浏览器信息
+        fingerprint: { type: String } // 浏览器指纹
       },
       type: { type: Number }, // 1：网页性能上报  2：ajax上报 3：js异常 4：资源加载日志
       selector: { type: String, default: '' }, // 选择器层级

@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2021-07-21 17:29:25
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-24 15:10:16
+ * @LastEditTime: 2021-12-27 13:44:49
  * @Description:
  */
 
@@ -20,7 +20,6 @@ module.exports = (app: MongooseTypes) => {
       pre_url: { type: String }, // 用户访问的上一个页面，本页面来源
       speed_type: { type: Number }, // 访问速度类型 1：正常  2：慢
       is_first_in: { type: Number }, // 是否是某次会话的首次进入 2: 首次  1：非首次
-      mark_page: { type: String }, // 所有资源页面统一标识 html img css js 用户系统信息等
       mark_user: { type: String }, // 统一某一时间段用户标识
       load_time: { type: Number, default: 0 }, // 页面完全加载时间 单位：ms
       dns_time: { type: Number, default: 0 }, // dns解析时间 单位：ms
@@ -34,8 +33,23 @@ module.exports = (app: MongooseTypes) => {
       request_time: { type: Number, default: 0 }, // request请求耗时
       analysisDom_time: { type: Number, default: 0 }, // 解析dom耗时
       ready_time: { type: Number, default: 0 }, // 页面准备时间
-      screenwidth: { type: Number }, // 屏幕宽度
-      screenheight: { type: Number } // 屏幕高度
+      device: {
+        w: { type: Number }, // 屏幕宽度
+        h: { type: Number }, // 屏幕高度
+        lan: { type: String }, // 语言版本
+        net: { type: String }, // 网络版本
+        orientation: { type: String }, // 横屏竖屏
+        fingerprint: { type: String }, // 浏览器指纹
+        browser: {
+          name: { type: String, default: '' },
+          version: { type: String, default: '' },
+          major: { type: String, default: '' }
+        },
+        os: {
+          name: { type: String, default: '' },
+          version: { type: String, default: '' }
+        }
+      }
     },
     {
       versionKey: false,

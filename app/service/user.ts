@@ -1,12 +1,11 @@
 /*
  * @Author: 杨宏旋
  * @Date: 2020-07-20 18:34:57
- * @LastEditors: 杨宏旋
- * @LastEditTime: 2021-07-15 10:40:43
+ * @LastEditors: yanghongxuan
+ * @LastEditTime: 2021-12-27 11:05:49
  * @Description:
  */
 import { Service } from 'egg'
-import { MongooseFilterQuery } from 'mongoose'
 import { ObjProps, ServicePageProps } from '../types'
 
 export default class User extends Service {
@@ -22,11 +21,11 @@ export default class User extends Service {
         ctx.model.User.countDocuments(queryval),
         ctx.model.User.find(queryval)
           .sort({
-            updated: -1,
+            updated: -1
           })
           .skip((pageNo - 1) * limit)
           .limit(limit)
-          .lean<ObjProps>(),
+          .lean<ObjProps>()
       ])
       return { pageList, count }
     } catch (error) {
@@ -43,7 +42,7 @@ export default class User extends Service {
     try {
       const list = await ctx.model.User.find(query)
         .sort({
-          created: -1,
+          created: -1
         })
         .lean<ObjProps>()
       return list
@@ -57,9 +56,7 @@ export default class User extends Service {
    * 用户详情
    * @param query 查询参数
    */
-  public async handleGetOne(
-    query: MongooseFilterQuery<Pick<any, string | number | symbol>> | undefined
-  ) {
+  public async handleGetOne(query) {
     const { ctx } = this
     try {
       return await ctx.model.User.findOne(query).lean<ObjProps>()
@@ -90,7 +87,7 @@ export default class User extends Service {
     try {
       const result = await ctx.model.User.updateOne(
         {
-          _id,
+          _id
         },
         ctx.request.body
       )
@@ -108,10 +105,10 @@ export default class User extends Service {
     try {
       const result = await ctx.model.User.updateOne(
         {
-          _id,
+          _id
         },
         {
-          status: 3,
+          status: 3
         }
       )
       return result

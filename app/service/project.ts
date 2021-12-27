@@ -2,11 +2,10 @@
  * @Author: 杨宏旋
  * @Date: 2020-07-20 18:34:57
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-22 16:36:11
+ * @LastEditTime: 2021-12-27 11:05:40
  * @Description:
  */
 import { Service } from 'egg'
-import { MongooseFilterQuery } from 'mongoose'
 import { ObjProps, ServicePageProps } from '../types'
 
 export default class Project extends Service {
@@ -57,9 +56,7 @@ export default class Project extends Service {
    * 用户详情
    * @param query 查询参数
    */
-  public async handleGetOne(
-    query: MongooseFilterQuery<Pick<any, string | number | symbol>> | undefined
-  ) {
+  public async handleGetOne(query) {
     const { ctx } = this
     try {
       return await ctx.model.Project.findOne(query).lean<ObjProps>()

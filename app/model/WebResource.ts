@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2021-07-21 17:29:25
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-24 15:08:17
+ * @LastEditTime: 2021-12-27 13:52:15
  * @Description:
  */
 
@@ -23,11 +23,9 @@ module.exports = (app: MongooseTypes) => {
       resource_datas: { type: Mixed }, // 页面所有加载资源json对象
       name: { type: String }, // 资源名称
       method: { type: String, default: 'GET' }, // 资源请求方式
-      type: { type: String }, // 资源类型
       duration: { type: Number, default: 0 }, // 资源请求耗时
       decoded_body_size: { type: Number, default: 0 }, // 资源请求返回大小
       next_hop_protocol: { type: String, default: 'http/1.1' }, // 资源请求类型
-      mark_page: { type: String }, // 所有资源页面统一标识 html img css js 用户系统信息等
       mark_user: { type: String } // 统一某一时间段用户标识
     },
     {

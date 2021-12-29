@@ -2,24 +2,21 @@
  * @Author: yanghongxuan
  * @Date: 2021-12-24 10:34:41
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-24 17:37:11
+ * @LastEditTime: 2021-12-29 10:27:13
  * @Description: 定时清洗日志
  */
 
 export default (app) => {
   return {
     schedule: {
-      cron: app.config.pvuvip_task_minute_time,
+      cron: app.config.redis_consumption.task_time,
       type: 'worker' // 指定所有的 worker都需要执行
     },
     async task(ctx) {
       if (app.config.is_web_task_run || app.config.is_wx_task_run) {
         // 查询db是否正常,不正常则重启
         try {
-          const result = await ctx.model.Project.count({}).exec()
-          app.logger.info(
-            `-----------定时清洗日志查询数据库是否可用----${result}------`
-          )
+          app.logger.info('-----------定时redis清洗日志-----------')
 
           if (app.config.is_web_task_run) {
             ctx.service.web.reportTask.savaDataCleaningByDimension()

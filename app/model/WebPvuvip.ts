@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2021-07-21 17:29:25
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-24 13:00:56
+ * @LastEditTime: 2021-12-27 18:39:10
  * @Description:
  */
 
@@ -12,7 +12,6 @@ module.exports = (app: MongooseTypes) => {
   const mongoose = app.mongoose
   const Schema = mongoose.Schema
   const conn = app.mongooseDB.get('Report')
-
   const WebPvUvIpSchema = new Schema(
     {
       app_id: { type: String }, // 所属系统ID
@@ -23,11 +22,12 @@ module.exports = (app: MongooseTypes) => {
       bounce: { type: String }, // 跳出率
       depth: { type: Number }, // 平均访问深度
       flow: { type: Number }, // 流量消费总额
-      type: { type: Number, default: 1 } // 1:每分钟数据  2：每小时数据
+      type: { type: Number, default: 1 }, // 1:每分钟数据  2：每小时数据
+      created_time: { type: Date }
     },
     {
       versionKey: false,
-      timestamps: { createdAt: true, updatedAt: false }
+      timestamps: { createdAt: false, updatedAt: false }
     }
   )
 

@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2021-07-21 17:29:25
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-27 13:52:15
+ * @LastEditTime: 2021-12-27 18:01:27
  * @Description:
  */
 
@@ -26,16 +26,17 @@ module.exports = (app: MongooseTypes) => {
       duration: { type: Number, default: 0 }, // 资源请求耗时
       decoded_body_size: { type: Number, default: 0 }, // 资源请求返回大小
       next_hop_protocol: { type: String, default: 'http/1.1' }, // 资源请求类型
-      mark_user: { type: String } // 统一某一时间段用户标识
+      mark_uv: { type: String }, // 统一uv标识
+      created_time: { type: Date }
     },
     {
       versionKey: false,
-      timestamps: { createdAt: true, updatedAt: false }
+      timestamps: { createdAt: false, updatedAt: false }
     }
   )
 
-  WebResourceSchema.index({ speed_type: 1, name: 1, createdAt: -1 })
-  WebResourceSchema.index({ name: 1, createdAt: -1 })
+  WebResourceSchema.index({ speed_type: 1, name: 1, created_time: -1 })
+  WebResourceSchema.index({ name: 1, created_time: -1 })
   WebResourceSchema.index({ speed_type: 1, url: 1 })
 
   app.models.WebResource = (appId: string) => {

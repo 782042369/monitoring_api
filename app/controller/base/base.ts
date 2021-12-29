@@ -4,7 +4,7 @@
  * @Author: 杨宏旋
  * @Date: 2020-07-20 17:55:43
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-27 14:01:50
+ * @LastEditTime: 2021-12-27 14:55:13
  * @Description:
  */
 
@@ -92,5 +92,23 @@ export default class BaseController extends Controller {
       pwd += $chars.charAt(Math.floor(Math.random() * maxPos))
     }
     return pwd + Date.now()
+  }
+
+  public getStartDate(date: any): Date {
+    const dater = date instanceof Date ? date : new Date(date || '')
+    dater.setHours(0)
+    dater.setMinutes(0)
+    dater.setSeconds(0)
+    dater.setMilliseconds(0)
+    return dater
+  }
+
+  public getEndDate(date: any): Date {
+    const dater = date instanceof Date ? date : new Date(date || '')
+    dater.setHours(23)
+    dater.setMinutes(59)
+    dater.setSeconds(59)
+    dater.setMilliseconds(999)
+    return dater
   }
 }

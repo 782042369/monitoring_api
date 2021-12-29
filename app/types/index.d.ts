@@ -3,7 +3,7 @@ import { CategoryEnum, ErrorLevelEnum } from '../enum'
  * @Author: 杨宏旋
  * @Date: 2020-07-23 16:47:19
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-27 13:52:25
+ * @LastEditTime: 2021-12-27 15:08:56
  * @Description:
  */
 export interface ObjProps {
@@ -93,4 +93,5 @@ export interface ReportInfoProps {
     orientation: string
     fingerprint: string
   }
+  created_time: Date
 }

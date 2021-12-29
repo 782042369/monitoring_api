@@ -2,7 +2,7 @@
  * @Author: 杨宏旋
  * @Date: 2020-07-20 18:34:57
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-27 14:01:04
+ * @LastEditTime: 2021-12-29 10:35:34
  * @Description:
  */
 import { Service } from 'egg'
@@ -26,7 +26,7 @@ export default class WebReport extends Service {
           })
           .skip((pageNo - 1) * limit)
           .limit(limit)
-          .lean<ObjProps>()
+          .lean<ObjProps[]>()
       ])
       return { pageList, count }
     } catch (error) {
@@ -45,7 +45,7 @@ export default class WebReport extends Service {
         .sort({
           created: -1
         })
-        .lean<ObjProps>()
+        .lean<ObjProps[]>()
       return list
     } catch (error) {
       ctx.logger.info('WebReport handleGetAllList error', error)
@@ -70,14 +70,14 @@ export default class WebReport extends Service {
    * 新增上报记录
    */
   public async handleAddOne() {
-    const { ctx } = this
+    const { ctx, app } = this
     try {
       const { log, selector = null, device, ...query }: any = ctx.query
       const system: any = await this.service.project.handleGetOne({
         app_id: query.appID
       })
       if (system === undefined || system?.is_use !== 0) return {}
-      const report = new ctx.model.WebReport()
+      const report: ObjProps = {}
 
       const logInfo = JSON.parse(log)
       if (query.category === CategoryEnum.RESOURCE) {
@@ -112,8 +112,17 @@ export default class WebReport extends Service {
       report.is_first_in = query.first
       report.device = JSON.parse(device)
       report.selector = selector || ''
-      const result = report.save()
-      return result
+      report.created_time = new Date()
+      if (app.config.redis_consumption.total_limit_web) {
+        // 限流
+        const length = await app.redis.llen('web_repore_datas')
+        if (length >= app.config.redis_consumption.total_limit_web) {
+          console.log('length: ', length)
+          return
+        }
+      }
+      // 生产者
+      app.redis.lpush('web_repore_datas', JSON.stringify(report))
     } catch (error) {
       ctx.logger.info('WebReport handleAddOne error', error)
       return error

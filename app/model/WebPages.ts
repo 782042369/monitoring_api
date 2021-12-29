@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2021-07-21 17:29:25
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-27 13:44:49
+ * @LastEditTime: 2021-12-27 18:39:53
  * @Description:
  */
 
@@ -19,8 +19,8 @@ module.exports = (app: MongooseTypes) => {
       url: { type: String }, // url域名
       pre_url: { type: String }, // 用户访问的上一个页面，本页面来源
       speed_type: { type: Number }, // 访问速度类型 1：正常  2：慢
-      is_first_in: { type: Number }, // 是否是某次会话的首次进入 2: 首次  1：非首次
-      mark_user: { type: String }, // 统一某一时间段用户标识
+      is_first_in: { type: Number }, // 首次进入 1:是 0:不是
+      mark_uv: { type: String }, // 统一uv标识
       load_time: { type: Number, default: 0 }, // 页面完全加载时间 单位：ms
       dns_time: { type: Number, default: 0 }, // dns解析时间 单位：ms
       tcp_time: { type: Number, default: 0 }, // TCP连接时间
@@ -49,11 +49,12 @@ module.exports = (app: MongooseTypes) => {
           name: { type: String, default: '' },
           version: { type: String, default: '' }
         }
-      }
+      },
+      created_time: { type: Date, default: Date.now }
     },
     {
       versionKey: false,
-      timestamps: { createdAt: true, updatedAt: false }
+      timestamps: { createdAt: false, updatedAt: false }
     }
   )
 
@@ -61,9 +62,9 @@ module.exports = (app: MongooseTypes) => {
     speed_type: 1,
     is_first_in: 1,
     url: 1,
-    createdAt: -1
+    created_time: -1
   })
-  WebPagesSchema.index({ createdAt: -1 })
+  WebPagesSchema.index({ created_time: -1 })
 
   app.models.WebPages = (appId: string) => {
     return conn.model(`web_pages_${appId}`, WebPagesSchema)

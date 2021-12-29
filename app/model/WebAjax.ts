@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2021-12-24 10:02:09
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-27 13:44:51
+ * @LastEditTime: 2021-12-27 18:01:12
  * @Description:
  */
 module.exports = (app: {
@@ -23,7 +23,7 @@ module.exports = (app: {
       duration: { type: Number, default: 0 }, // AJAX响应时间 单位：ms
       decoded_body_size: { type: Number, default: 0 }, // 返回字段大小  单位：B
       call_url: { type: String }, // 调用页面的URL
-      mark_user: { type: String }, // 统一某一时间段用户标识
+      mark_uv: { type: String }, // 统一uv标识
       selector: { type: String, default: '' }, // 选择器层级
       status: { type: Number }, // 请求状态
       device: {
@@ -38,16 +38,17 @@ module.exports = (app: {
           name: { type: String, default: '' },
           version: { type: String, default: '' }
         }
-      }
+      },
+      created_time: { type: Date }
     },
     {
       versionKey: false,
-      timestamps: { createdAt: true, updatedAt: false }
+      timestamps: { createdAt: false, updatedAt: false }
     }
   )
 
-  WebAjaxsSchema.index({ speed_type: 1, url: 1, createdAt: -1 })
-  WebAjaxsSchema.index({ speed_type: 1, call_url: 1, createdAt: -1 })
+  WebAjaxsSchema.index({ speed_type: 1, url: 1, created_time: -1 })
+  WebAjaxsSchema.index({ speed_type: 1, call_url: 1, created_time: -1 })
 
   app.models.WebAjaxs = (appId: string) => {
     return conn.model(`web_ajaxs_${appId}`, WebAjaxsSchema)

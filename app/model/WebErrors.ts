@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2021-07-21 17:29:25
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-27 13:56:29
+ * @LastEditTime: 2021-12-27 18:01:18
  * @Description:
  */
 import { MongooseTypes } from './types'
@@ -20,7 +20,7 @@ module.exports = (app: MongooseTypes) => {
       type: { type: String }, // 错误类型
       col: { type: String }, // js错误列号
       line: { type: String }, // js错误行号
-      mark_user: { type: String }, // 统一某一时间段用户标识
+      mark_uv: { type: String }, // 统一uv标识
       selector: { type: String, default: '' }, // 选择器层级
       device: {
         w: { type: Number }, // 屏幕宽度
@@ -37,17 +37,18 @@ module.exports = (app: MongooseTypes) => {
           name: { type: String, default: '' },
           version: { type: String, default: '' }
         }
-      }
+      },
+      created_time: { type: Date }
     },
     {
       versionKey: false,
-      timestamps: { createdAt: true, updatedAt: false }
+      timestamps: { createdAt: false, updatedAt: false }
     }
   )
 
-  WebErrorsSchema.index({ category: 1, resource_url: 1, createdAt: -1 })
-  WebErrorsSchema.index({ resource_url: 1, createdAt: -1 })
-  WebErrorsSchema.index({ createdAt: -1 })
+  WebErrorsSchema.index({ category: 1, resource_url: 1, created_time: -1 })
+  WebErrorsSchema.index({ resource_url: 1, created_time: -1 })
+  WebErrorsSchema.index({ created_time: -1 })
 
   app.models.WebErrors = (appId: string) => {
     return conn.model(`web_errors_${appId}`, WebErrorsSchema)

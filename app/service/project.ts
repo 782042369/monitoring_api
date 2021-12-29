@@ -2,7 +2,7 @@
  * @Author: 杨宏旋
  * @Date: 2020-07-20 18:34:57
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-27 11:05:40
+ * @LastEditTime: 2021-12-28 10:11:44
  * @Description:
  */
 import { Service } from 'egg'
@@ -25,7 +25,7 @@ export default class Project extends Service {
           })
           .skip((pageNo - 1) * limit)
           .limit(limit)
-          .lean<ObjProps>()
+          .lean<ObjProps[]>()
       ])
       return { pageList, count }
     } catch (error) {
@@ -44,7 +44,7 @@ export default class Project extends Service {
         .sort({
           created: -1
         })
-        .lean<ObjProps>()
+        .lean<ObjProps[]>()
       return list
     } catch (error) {
       ctx.logger.info('project handleGetAllList error', error)

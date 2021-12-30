@@ -2,7 +2,7 @@
  * @Author: 杨宏旋
  * @Date: 2020-11-16 12:07:28
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-30 17:04:33
+ * @LastEditTime: 2021-12-30 17:14:48
  * @Description:
  */
 import { EggAppConfig, PowerPartial } from 'egg'
@@ -25,7 +25,8 @@ export default () => {
         url: `mongodb://${DBConfig.mongo_host_prod}:${DBConfig.mongo_port_prod}/Report?authSource=admin`,
         options: {
           user: DBConfig.mongo_user_prod,
-          pass: DBConfig.mongo_pwd_prod
+          pass: DBConfig.mongo_pwd_prod,
+          useUnifiedTopology: true
         }
       }
     }

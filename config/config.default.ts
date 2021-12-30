@@ -5,7 +5,7 @@
  * @Author: 杨宏旋
  * @Date: 2020-07-20 17:11:50
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-29 10:38:55
+ * @LastEditTime: 2021-12-29 15:16:54
  * @Description:
  */
 import { EggAppConfig, EggAppInfo, PowerPartial } from 'egg'
@@ -162,11 +162,16 @@ export default (appInfo: EggAppInfo) => {
   }
   config.redis_consumption = {
     // 定时任务执行时间
-    task_time: '*/10 * * * * *',
+    task_time: '*/20 * * * * *',
     // 每次定时任务消费线程数(web端)
     thread_web: 1000,
     // 消息队列池限制数, 0：不限制 number: 限制条数，高并发时服务优雅降级方案
-    total_limit_web: 0
+    total_limit_web: 40000
+  }
+  // top数据分析提取前N条配置
+  config.top_alalysis_size = {
+    web: 10,
+    wx: 10
   }
   return {
     ...config

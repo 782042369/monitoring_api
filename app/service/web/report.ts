@@ -2,14 +2,14 @@
  * @Author: 杨宏旋
  * @Date: 2020-07-20 18:34:57
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-29 10:35:34
+ * @LastEditTime: 2021-12-29 14:00:54
  * @Description:
  */
-import { Service } from 'egg'
+import IndexService from '../index'
 import { CategoryEnum } from '../../enum/index'
 import { ObjProps, ServicePageProps } from '../../types'
 
-export default class WebReport extends Service {
+export default class Index extends IndexService {
   /**
    * 用户列表
    * @param query 查询参数
@@ -115,14 +115,13 @@ export default class WebReport extends Service {
       report.created_time = new Date()
       if (app.config.redis_consumption.total_limit_web) {
         // 限流
-        const length = await app.redis.llen('web_repore_datas')
+        const length = await app.redis.llen('web_report_datas')
         if (length >= app.config.redis_consumption.total_limit_web) {
-          console.log('length: ', length)
           return
         }
       }
       // 生产者
-      app.redis.lpush('web_repore_datas', JSON.stringify(report))
+      app.redis.lpush('web_report_datas', JSON.stringify(report))
     } catch (error) {
       ctx.logger.info('WebReport handleAddOne error', error)
       return error

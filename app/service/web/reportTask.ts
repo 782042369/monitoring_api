@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2021-12-24 10:37:24
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-29 10:31:04
+ * @LastEditTime: 2021-12-29 17:14:55
  * @Description: 上报日志按应用级别做数据清 洗
  */
 
@@ -41,12 +41,11 @@ export default class Project extends IndexService {
     const { app } = this
     // 遍历数据
     try {
-      const query = await this.app.redis.rpop('web_repore_datas')
+      const query = await this.app.redis.rpop('web_report_datas')
       if (!query) return
       const item = JSON.parse(query)
       let system: any = {}
       if (MAP.get(item.app_id)) {
-        console.log(111, item.app_id)
         return
       }
       // 做一次appId缓存

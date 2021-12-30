@@ -1,9 +1,11 @@
+/* eslint-disable space-before-function-paren */
+/* eslint-disable object-shorthand */
 /* eslint-disable newline-per-chained-call */
 /*
  * @Author: yanghongxuan
  * @Date: 2021-12-23 17:15:42
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-28 14:56:23
+ * @LastEditTime: 2021-12-29 18:29:25
  * @Description:
  */
 /*
@@ -14,10 +16,55 @@
  * @Description:
  */
 import IndexService from '../index'
-
 // import { ObjProps, ServicePageProps } from '../../types'
+declare function emit(k, v)
 
-export default class Project extends IndexService {
+export default class Index extends IndexService {
+  // 保存用户上报的数据
+  async getPvUvIpData(appId, beginTime, endTime) {
+    const querydata = {
+      app_id: appId,
+      type: 1,
+      created_time: { $gte: beginTime, $lt: endTime }
+    }
+    return await this.ctx.model.WebPvuvip.find(querydata)
+      .read('sp')
+      .lean()
+      .exec()
+  }
+  // 历史概况
+  async getHistoryPvUvIplist(appId) {
+    const query = { app_id: appId, type: 2 }
+    return await this.ctx.model.WebPvuvip.find(query)
+      .read('sp')
+      .sort({ created_time: -1 })
+      .limit(5)
+      .exec()
+  }
+  // 查询某日概况
+  async getPvUvIpSurveyOne({ appId, beginTime, endTime }) {
+    const query = {
+      app_id: appId,
+      type: 2,
+      created_time: { $gte: beginTime, $lte: endTime }
+    }
+    const data = await this.ctx.model.WebPvuvip.findOne(query).read('sp').exec()
+    if (data) return data
+    // 不存在则储存
+    const pvuvipdata = await this.getTheDataWithinATimePeriod({
+      appId,
+      beginTime,
+      endTime,
+      type: true
+    })
+    const result = await this.savePvUvIpData({
+      appId,
+      endTime: beginTime,
+      type: 2,
+      pvuvipdata
+    })
+    return result
+  }
   /**
    * @param query 查询参数
    */
@@ -47,16 +94,16 @@ export default class Project extends IndexService {
       }
     }
     const user = this.user(appId, querydata)
-    // const bounce = this.bounce(appId, querydata)
-    const data = await Promise.all([pv, uv, ip, ajax, user, flow])
+    const bounce = this.bounce(appId, querydata)
+    const data = await Promise.all([pv, uv, ip, ajax, user, flow, bounce])
     return {
       pv: data[0] || 0,
       uv: data[1].length ? data[1][0].count : 0,
       ip: data[2].length ? data[2][0].count : 0,
       ajax: data[3],
       user: data[4].length ? data[4][0].count : 0,
-      bounce: 0,
-      flow: data[5] || 0
+      flow: data[5] || 0,
+      bounce: data[6] || 0
     }
   }
   // pv
@@ -97,35 +144,12 @@ export default class Project extends IndexService {
       .WebEnvironment(appId)
       .aggregate([
         { $match: querydata },
-        { $project: { mark_user: true } },
-        { $group: { _id: '$mark_user' } },
+        { $project: { mark_uv: true } },
+        { $group: { _id: '$mark_uv' } },
         { $group: { _id: null, count: { $sum: 1 } } }
       ])
       .exec()
   }
-  // 跳出率
-  // public async bounce(appId, querydata) {
-  // const option = {
-  //   map() {
-  //     // eslint-disable-line
-  //     emit(this.mark_user, 1)
-  //   },
-  //   reduce(key, values) {
-  //     return values.length === 1
-  //   }, // eslint-disable-line
-  //   query: querydata,
-  //   out: { replace: 'webjumpout' }
-  // }
-  // const res = await this.models.WebEnvironment(appId).mapReduce(option)
-  // const result = await res.model
-  //   .find()
-  //   .where('value')
-  //   .equals(1)
-  //   .count()
-  // .exec()
-  //
-  // return result
-  // }
   // 流量消费
   public async flow(appId, querydata) {
     const pagequery = Object.assign({}, querydata, { is_first_in: 0 })
@@ -146,6 +170,46 @@ export default class Project extends IndexService {
     const data = await Promise.all([pageflow, ajaxflow])
     const page_flow = data[0].length ? data[0][0].amount : 0
     const ajax_flow = data[1].length ? data[1][0].amount : 0
-    return (page_flow + ajax_flow) / 1024 / 1024
+    return page_flow + ajax_flow
+  }
+  // 跳出率
+  async bounce(appId, querydata) {
+    const res = await this.models.WebEnvironment(appId).mapReduce({
+      map: function () {
+        emit((this as any).mark_uv, 1)
+      },
+      reduce: function (_key, values) {
+        return values.length === 1
+      },
+      query: querydata,
+      out: { replace: 'webjumpout' }
+    })
+    const result = await res.model
+      .find()
+      .where('value')
+      .equals(1)
+      .count()
+      .exec()
+    return result
+  }
+  // 保存pvuvip数据
+  async savePvUvIpData({ appId, endTime, type, pvuvipdata }) {
+    const pvuvip = new this.ctx.model.WebPvuvip()
+    pvuvip.app_id = appId
+    pvuvip.pv = pvuvipdata.pv || 0
+    pvuvip.uv = pvuvipdata.uv || 0
+    pvuvip.ip = pvuvipdata.ip || 0
+    pvuvip.ajax = pvuvipdata.ajax || 0
+    pvuvip.flow = pvuvipdata.flow || 0
+    pvuvip.bounce = pvuvipdata.bounce
+      ? ((pvuvipdata.bounce / pvuvipdata.pv) * 100).toFixed(2) + '%'
+      : 0
+    pvuvip.depth =
+      pvuvipdata.pv && pvuvipdata.user
+        ? Number(pvuvipdata.pv / pvuvipdata.user)
+        : 0
+    pvuvip.created_time = endTime
+    pvuvip.type = type
+    return await pvuvip.save()
   }
 }

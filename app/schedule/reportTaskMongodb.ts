@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2021-12-24 10:34:41
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-29 10:27:13
+ * @LastEditTime: 2021-12-29 14:45:44
  * @Description: 定时清洗日志
  */
 
@@ -16,7 +16,7 @@ export default (app) => {
       if (app.config.is_web_task_run || app.config.is_wx_task_run) {
         // 查询db是否正常,不正常则重启
         try {
-          app.logger.info('-----------定时redis清洗日志-----------')
+          // app.logger.info('-----------定时redis清洗日志-----------')
 
           if (app.config.is_web_task_run) {
             ctx.service.web.reportTask.savaDataCleaningByDimension()

@@ -5,7 +5,7 @@
  * @Author: 杨宏旋
  * @Date: 2020-07-20 17:11:50
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-30 17:02:12
+ * @LastEditTime: 2021-12-30 17:26:56
  * @Description:
  */
 import { EggAppConfig, EggAppInfo, PowerPartial } from 'egg'
@@ -29,10 +29,10 @@ export default (appInfo: EggAppInfo) => {
     outputJSON: true,
     dir: path.join(appInfo.baseDir, 'logs')
   }
-  config.logrotator = {
-    maxFiles: 10, // pieces rotate by size
-    maxDays: 7 // keep max days log files, default is `31`. Set `0` to keep all logs
-  }
+  // config.logrotator = {
+  //   maxFiles: 10, // pieces rotate by size
+  //   maxDays: 7 // keep max days log files, default is `31`. Set `0` to keep all logs
+  // }
   // config.alinode = {
   //   // 从 `Node.js 性能平台` 获取对应的接入参数
   //   enable: true,

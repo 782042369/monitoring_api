@@ -2,7 +2,7 @@
  * @Author: 杨宏旋
  * @Date: 2020-07-20 17:11:50
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-24 09:37:24
+ * @LastEditTime: 2021-12-30 17:26:51
  * @Description:
  */
 import { EggPlugin } from 'egg'
@@ -45,10 +45,10 @@ const plugin: EggPlugin = {
   //   enable: true,
   //   package: 'egg-alinode',
   // },
-  logrotator: {
-    enable: true,
-    package: 'egg-logrotator'
-  },
+  // logrotator: {
+  //   enable: true,
+  //   package: 'egg-logrotator'
+  // },
   redis: {
     enable: true,
     package: 'egg-redis'

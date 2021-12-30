@@ -2,7 +2,7 @@
  * @Author: 杨宏旋
  * @Date: 2021-07-15 10:22:04
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-11-08 15:16:48
+ * @LastEditTime: 2021-12-30 16:57:47
  * @Description:
  */
 import UserBaseController from '../base/userbase'
@@ -35,7 +35,7 @@ export default class UserController extends UserBaseController {
         this.error(500, `创建用户失败，${email}已存在。`)
         return
       }
-      const user = await ctx.service.user.handleGetAllList({})
+      const user: any = await ctx.service.user.handleGetAllList({})
       ctx.request.body.passwd = this.handlePwdToMd5(passwd)
       ctx.request.body.passwd2 = passwd
       ctx.request.body.type =

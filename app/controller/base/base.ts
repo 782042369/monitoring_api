@@ -4,13 +4,13 @@
  * @Author: 杨宏旋
  * @Date: 2020-07-20 17:55:43
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-29 14:01:45
+ * @LastEditTime: 2021-12-30 16:57:31
  * @Description:
  */
 
 import { Controller, Context } from 'egg'
 import validateRule from '../../validate'
-import { validateRuleType, UserInfoProps } from '../../types/index'
+import { validateRuleType, ObjProps } from '../../types/index'
 import * as crypto from 'crypto'
 
 // const MapData = new Map()
@@ -70,11 +70,11 @@ export default class BaseController extends Controller {
    * jwt 获取当前登陆用户
    * @return
    */
-  public async GetUserByjwt(): Promise<UserInfoProps> {
+  public async GetUserByjwt(): Promise<ObjProps> {
     const { ctx, app } = this
     const token = (ctx.request.header.authorization as string).split(' ')[1]
     const { _id }: any = ctx.app.jwt.verify(token, app.config.jwt.secret)
-    const userInfo: UserInfoProps = await ctx.service.user.handleGetOne({
+    const userInfo: ObjProps = await ctx.service.user.handleGetOne({
       _id
     })
     return userInfo

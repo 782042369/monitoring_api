@@ -2,7 +2,7 @@
  * @Author: 杨宏旋
  * @Date: 2020-07-20 18:34:57
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-28 10:11:23
+ * @LastEditTime: 2021-12-30 16:57:15
  * @Description:
  */
 import { Service } from 'egg'
@@ -58,12 +58,7 @@ export default class User extends Service {
    */
   public async handleGetOne(query) {
     const { ctx } = this
-    try {
-      return await ctx.model.User.findOne(query).lean<ObjProps>()
-    } catch (error) {
-      ctx.logger.info('user handleGetOne error', error)
-      return error
-    }
+    return await ctx.model.User.findOne(query).lean<ObjProps>()
   }
   /**
    * 新增user

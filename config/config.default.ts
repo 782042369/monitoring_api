@@ -5,13 +5,12 @@
  * @Author: 杨宏旋
  * @Date: 2020-07-20 17:11:50
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-30 10:15:00
+ * @LastEditTime: 2021-12-30 17:02:12
  * @Description:
  */
 import { EggAppConfig, EggAppInfo, PowerPartial } from 'egg'
 import * as path from 'path'
 import BaseConfig from './BaseConfig'
-import DBConfig from './DBConfig'
 
 export default (appInfo: EggAppInfo) => {
   const config = {} as PowerPartial<EggAppConfig>
@@ -117,17 +116,7 @@ export default (appInfo: EggAppInfo) => {
   config.BaseCfg = {
     delete: 3
   }
-  config.mongoose = {
-    clients: {
-      Report: {
-        url: `mongodb://${DBConfig.mongo_host}:${DBConfig.mongo_port}/Report?authSource=admin`,
-        options: {
-          user: DBConfig.mongo_user,
-          pass: DBConfig.mongo_pwd
-        }
-      }
-    }
-  }
+
   config.multipart = {
     mode: 'stream',
     fileSize: '1024mb', // 接收文件大小
@@ -151,15 +140,6 @@ export default (appInfo: EggAppInfo) => {
   // 上报线程
   config.report_thread = 10
 
-  // redis配置
-  config.redis = {
-    client: {
-      port: 6379, // Redis port
-      host: '1.116.160.128', // Redis host
-      password: '',
-      db: 0
-    }
-  }
   config.redis_consumption = {
     // 定时任务执行时间
     task_time: '*/20 * * * * *',

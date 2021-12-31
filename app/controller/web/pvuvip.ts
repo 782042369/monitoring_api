@@ -4,7 +4,7 @@ import { timeFormat } from './../../utils/index'
  * @Author: yanghongxuan
  * @Date: 2021-12-23 17:25:44
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-29 18:38:55
+ * @LastEditTime: 2021-12-31 11:09:16
  * @Description:
  */
 import * as parser from 'cron-parser'
@@ -62,8 +62,8 @@ export default class Controller extends BaseController {
         appId: query.appId
       })
       this.success(200, 'ok', {
-        ...result._doc,
-        flow: converUnit(result._doc.flow)
+        ...(result?._doc || result),
+        flow: converUnit(result?.flow || result?._doc?.flow || 0)
       })
     } catch (error) {
       this.error(500, `pvuvip数据获取失败，${error}`, error)

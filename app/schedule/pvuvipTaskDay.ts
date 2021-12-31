@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2021-12-29 14:43:33
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-31 10:45:54
+ * @LastEditTime: 2021-12-31 10:53:23
  * @Description:
  */
 
@@ -11,7 +11,8 @@ export default (app) => {
     schedule: {
       cron: app.config.pvuvip_task_day_time,
       type: 'worker',
-      disable: !(app.config.is_web_task_run || app.config.is_wx_task_run)
+      disable: !(app.config.is_web_task_run || app.config.is_wx_task_run),
+      env: ['prod']
     },
     // 定时处pv，uv,ip统计信息 每分钟执行一次
     async task(ctx) {

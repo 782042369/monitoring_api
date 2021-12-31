@@ -5,7 +5,7 @@
  * @Author: yanghongxuan
  * @Date: 2021-12-23 17:15:42
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-31 10:35:15
+ * @LastEditTime: 2021-12-31 11:07:03
  * @Description:
  */
 /*
@@ -197,7 +197,7 @@ export default class Index extends IndexService {
   }
   // 保存pvuvip数据
   async savePvUvIpData({ appId, endTime, type, pvuvipdata }) {
-    const pvuvip = new this.ctx.model.WebPvuvip()
+    const pvuvip = new this.ctx.model.WebPvuvip().lean()
     pvuvip.app_id = appId
     pvuvip.pv = pvuvipdata.pv || 0
     pvuvip.uv = pvuvipdata.uv || 0

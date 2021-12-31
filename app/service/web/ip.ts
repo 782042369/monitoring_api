@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2021-12-31 15:48:28
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-31 16:23:45
+ * @LastEditTime: 2021-12-31 16:40:12
  * @Description:
  */
 import IndexService from '../index'
@@ -30,7 +30,7 @@ export default class Index extends IndexService {
   async getIpDataForIP_API(ip, appId) {
     if (!ip || ip === '127.0.0.1') return
     try {
-      const url = `http://ip-api.com/json/${ip}?lang=zh-CN`
+      const url = `http://demo.ip-api.com/json/${ip}?lang=zh-CN`
       const result = await this.app.curl(url, {
         dataType: 'json'
       })

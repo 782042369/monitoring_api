@@ -2,7 +2,7 @@
  * @Author: 杨宏旋
  * @Date: 2020-07-20 17:11:50
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-30 17:26:51
+ * @LastEditTime: 2021-12-31 14:51:43
  * @Description:
  */
 import { EggPlugin } from 'egg'

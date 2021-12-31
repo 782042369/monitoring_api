@@ -3,7 +3,7 @@
  * @Author: yanghongxuan
  * @Date: 2021-12-23 17:25:44
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-31 14:28:32
+ * @LastEditTime: 2021-12-31 15:02:37
  * @Description:
  */
 import * as parser from 'cron-parser'
@@ -61,8 +61,8 @@ export default class Controller extends BaseController {
         appId: query.appId
       })
       this.success(200, 'ok', {
-        ...(result?._doc || result),
-        flow: converUnit(result?.flow || result?._doc?.flow || 0)
+        ...result,
+        flow: converUnit(result?.flow || 0)
       })
     } catch (error) {
       this.error(500, `pvuvip数据获取失败，${error}`, error)
@@ -197,7 +197,10 @@ export default class Controller extends BaseController {
     const query = ctx.query
     const appId = query.appId
     if (!appId) throw new Error('pvuvip获得历史概况：appId不能为空')
-    const result = await ctx.service.web.pvuvip.getHistoryPvUvIplist(appId)
+    const result = await ctx.service.web.pvuvip.getHistoryPvUvIplist({
+      app_id: appId,
+      endTime: getStartDate(new Date())
+    })
 
     this.success(200, 'ok', result)
   }

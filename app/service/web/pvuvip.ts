@@ -5,7 +5,7 @@
  * @Author: yanghongxuan
  * @Date: 2021-12-23 17:15:42
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-29 18:29:25
+ * @LastEditTime: 2021-12-31 10:35:15
  * @Description:
  */
 /*
@@ -48,7 +48,10 @@ export default class Index extends IndexService {
       type: 2,
       created_time: { $gte: beginTime, $lte: endTime }
     }
-    const data = await this.ctx.model.WebPvuvip.findOne(query).read('sp').exec()
+    const data = await this.ctx.model.WebPvuvip.findOne(query)
+      .lean()
+      .read('sp')
+      .exec()
     if (data) return data
     // 不存在则储存
     const pvuvipdata = await this.getTheDataWithinATimePeriod({

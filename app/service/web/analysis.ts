@@ -181,6 +181,7 @@ export default class Index extends IndexService {
       app_id: appId,
       created_time: { $gte: new Date(beginTime), $lte: new Date(endTime) }
     })
+      .lean()
       .read('sp')
       .exec()
     if (data) return data

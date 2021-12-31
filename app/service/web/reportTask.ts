@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2021-12-24 10:37:24
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-30 10:34:50
+ * @LastEditTime: 2021-12-31 16:22:15
  * @Description: 上报日志按应用级别做数据清 洗
  */
 
@@ -15,7 +15,7 @@ import { ReportInfoProps, ResourceListProps } from '../../types'
 const MAP = new Map()
 export default class Project extends IndexService {
   cacheIpJson: {
-    [x: string]: { city: string; province: string }
+    [x: string]: { city: string; province: string; country: string }
   }
   cacheJson: {}
   cacheArr: string[]
@@ -294,9 +294,11 @@ export default class Project extends IndexService {
       let datas: {
         city: string
         province: string
+        country: string
       } = {
         city: '',
-        province: ''
+        province: '',
+        country: ''
       }
       if (!data.ip || data.ip !== '127.0.0.1') {
         if (this.cacheIpJson[copyip]) {
@@ -306,10 +308,10 @@ export default class Project extends IndexService {
           const info = await app.redis.get(copyip)
           console.log('info: ', info)
 
-          // if (info) {
-          //   datas = JSON.parse(info)
-          //   this.cacheIpJson[copyip] = datas
-          // }
+          if (info) {
+            datas = JSON.parse(info)
+            this.cacheIpJson[copyip] = datas
+          }
         }
       }
 
@@ -331,6 +333,7 @@ export default class Project extends IndexService {
       if (datas?.city) {
         environment.province = datas.province
         environment.city = datas.city
+        environment.country = datas.country || ''
       }
       await environment.save()
     } catch (error) {

@@ -2,73 +2,38 @@
  * @Author: 杨宏旋
  * @Date: 2020-07-20 18:34:57
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-29 14:00:54
+ * @LastEditTime: 2021-12-31 15:49:46
  * @Description:
  */
 import IndexService from '../index'
 import { CategoryEnum } from '../../enum/index'
-import { ObjProps, ServicePageProps } from '../../types'
+import { ObjProps } from '../../types'
 
+/**
+ * 参数说明
+ *  app_id: { type: String }, // 系统标识
+    user_agent: { type: String }, // 用户浏览器信息标识
+    ip: { type: String }, // 用户ip
+    mark_user: { type: String }, // 统一用户标识
+    mark_uv: { type: String }, // 统一uv标识
+    url: { type: String }, // 访问url
+    pre_url: { type: String, default: '' }, // 上一页面来源
+    performance: { type: Mixed, default: {} }, // 用户浏览器性能数据
+    log_list: { type: Mixed, default: {} }, // 日志信息列表
+    resource_list: { type: Mixed, default: [] }, // 资源性能数据列表
+    device: {
+      w: { type: Number }, // 屏幕宽度
+      h: { type: Number }, // 屏幕高度
+      lan: { type: String }, // 语言版本
+      net: { type: String }, // 网络版本
+      orientation: { type: String }, // 横屏竖屏
+      fingerprint: { type: String } // 浏览器指纹
+    },
+    type: { type: Number }, // 1：网页性能上报  2：ajax上报 3：js异常 4：资源加载日志
+    selector: { type: String, default: '' }, // 选择器层级
+    is_first_in: { type: Number } // 首次进入 1:是 0:不是
+ */
 export default class Index extends IndexService {
-  /**
-   * 用户列表
-   * @param query 查询参数
-   */
-  public async handleGetList(query: ServicePageProps) {
-    const { ctx } = this
-    try {
-      const { pageNo, limit, ...queryval } = query
-      const [count, pageList] = await Promise.all([
-        ctx.model.WebReport.countDocuments(queryval),
-        ctx.model.WebReport.find(queryval)
-          .sort({
-            updated: -1
-          })
-          .skip((pageNo - 1) * limit)
-          .limit(limit)
-          .lean<ObjProps[]>()
-      ])
-      return { pageList, count }
-    } catch (error) {
-      ctx.logger.info('WebReport handleGetList error', error)
-      return error
-    }
-  }
-  /**
-   * 用户列表
-   * @param query 查询参数
-   */
-  public async handleGetAllList(query: ObjProps) {
-    const { ctx } = this
-    try {
-      const list = await ctx.model.WebReport.find(query)
-        .sort({
-          created: -1
-        })
-        .lean<ObjProps[]>()
-      return list
-    } catch (error) {
-      ctx.logger.info('WebReport handleGetAllList error', error)
-      return error
-    }
-  }
-
-  /**
-   * 用户详情
-   * @param query 查询参数
-   */
-  public async handleGetOne(query) {
-    const { ctx } = this
-    try {
-      return await ctx.model.WebReport.findOne(query).lean<ObjProps>()
-    } catch (error) {
-      ctx.logger.info('WebReport handleGetOne error', error)
-      return error
-    }
-  }
-  /**
-   * 新增上报记录
-   */
   public async handleAddOne() {
     const { ctx, app } = this
     try {

@@ -10,6 +10,7 @@ import ExportIndex from '../../../app/service/index';
 import ExportProject from '../../../app/service/project';
 import ExportUser from '../../../app/service/user';
 import ExportWebAnalysis from '../../../app/service/web/analysis';
+import ExportWebIp from '../../../app/service/web/ip';
 import ExportWebPvuvip from '../../../app/service/web/pvuvip';
 import ExportWebPvuvipTask from '../../../app/service/web/pvuvipTask';
 import ExportWebReport from '../../../app/service/web/report';
@@ -22,6 +23,7 @@ declare module 'egg' {
     user: AutoInstanceType<typeof ExportUser>;
     web: {
       analysis: AutoInstanceType<typeof ExportWebAnalysis>;
+      ip: AutoInstanceType<typeof ExportWebIp>;
       pvuvip: AutoInstanceType<typeof ExportWebPvuvip>;
       pvuvipTask: AutoInstanceType<typeof ExportWebPvuvipTask>;
       report: AutoInstanceType<typeof ExportWebReport>;

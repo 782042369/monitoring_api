@@ -9,7 +9,6 @@ import ExportWebEnvironment from '../../../app/model/WebEnvironment';
 import ExportWebErrors from '../../../app/model/WebErrors';
 import ExportWebPages from '../../../app/model/WebPages';
 import ExportWebPvuvip from '../../../app/model/WebPvuvip';
-import ExportWebReport from '../../../app/model/WebReport';
 import ExportWebResource from '../../../app/model/WebResource';
 import ExportWebStatis from '../../../app/model/WebStatis';
 
@@ -22,7 +21,6 @@ declare module 'egg' {
     WebErrors: ReturnType<typeof ExportWebErrors>;
     WebPages: ReturnType<typeof ExportWebPages>;
     WebPvuvip: ReturnType<typeof ExportWebPvuvip>;
-    WebReport: ReturnType<typeof ExportWebReport>;
     WebResource: ReturnType<typeof ExportWebResource>;
     WebStatis: ReturnType<typeof ExportWebStatis>;
   }

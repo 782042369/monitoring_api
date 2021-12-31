@@ -2,7 +2,7 @@
  * @Author: yanghongxuan
  * @Date: 2021-07-21 17:29:25
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-29 09:24:21
+ * @LastEditTime: 2021-12-31 15:59:43
  * @Description:
  */
 
@@ -23,7 +23,7 @@ module.exports = (app: MongooseTypes) => {
       system: { type: String }, // 操作系统
       system_version: { type: String }, // 系统版本
       ip: { type: String }, // 访问者IP
-      county: { type: String, default: '' }, // 国家
+      country: { type: String, default: '' }, // 国家
       province: { type: String, default: '' }, // 省
       city: { type: String, default: '' }, // 市
       system_w: { type: Number }, // 屏幕宽

@@ -3,7 +3,7 @@
  * @Author: yanghongxuan
  * @Date: 2021-12-23 17:25:44
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-31 13:59:47
+ * @LastEditTime: 2021-12-31 14:22:20
  * @Description:
  */
 import * as parser from 'cron-parser'
@@ -190,15 +190,15 @@ export default class Controller extends BaseController {
     }
     this.success(200, 'ok', result)
   }
-  // @methodWrap('/api/getHistoryPvUvIplist', 'get', 0)
-  // // 获得历史概况
-  // async getHistoryPvUvIplist() {
-  //   const { ctx } = this
-  //   const query = ctx.rquery
-  //   const appId = query.appId
-  //   if (!appId) throw new Error('pvuvip获得历史概况：appId不能为空')
-  //   const result = await ctx.service.web.pvuvip.getHistoryPvUvIplist(appId)
+  @methodWrap('/api/getHistoryPvUvIplist', 'get', 0)
+  // 获得历史概况
+  async getHistoryPvUvIplist() {
+    const { ctx } = this
+    const query = ctx.rquery
+    const appId = query.appId
+    if (!appId) throw new Error('pvuvip获得历史概况：appId不能为空')
+    const result = await ctx.service.web.pvuvip.getHistoryPvUvIplist(appId)
 
-  //   this.success(200, 'ok', result)
-  // }
+    this.success(200, 'ok', result)
+  }
 }

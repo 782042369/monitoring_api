@@ -1,16 +1,15 @@
-import { timeFormat } from './../../utils/index'
 /* eslint-disable no-constant-condition */
 /*
  * @Author: yanghongxuan
  * @Date: 2021-12-23 17:25:44
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-31 11:09:16
+ * @LastEditTime: 2021-12-31 13:59:47
  * @Description:
  */
 import * as parser from 'cron-parser'
 import BaseController from '../base/base'
 import { SelfController, methodWrap } from '../../router'
-import { converUnit, getEndDate, getStartDate } from '../../utils'
+import { converUnit, getEndDate, getStartDate, timeFormat } from '../../utils'
 import { ObjProps } from '../../types'
 
 // const lru = new LRUCache(15)
@@ -191,4 +190,15 @@ export default class Controller extends BaseController {
     }
     this.success(200, 'ok', result)
   }
+  // @methodWrap('/api/getHistoryPvUvIplist', 'get', 0)
+  // // 获得历史概况
+  // async getHistoryPvUvIplist() {
+  //   const { ctx } = this
+  //   const query = ctx.rquery
+  //   const appId = query.appId
+  //   if (!appId) throw new Error('pvuvip获得历史概况：appId不能为空')
+  //   const result = await ctx.service.web.pvuvip.getHistoryPvUvIplist(appId)
+
+  //   this.success(200, 'ok', result)
+  // }
 }

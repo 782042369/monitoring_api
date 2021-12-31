@@ -2,7 +2,7 @@
  * @Author: 杨宏旋
  * @Date: 2020-11-16 12:07:28
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-30 17:14:39
+ * @LastEditTime: 2021-12-31 14:10:21
  * @Description:
  */
 import { EggAppConfig, PowerPartial } from 'egg'

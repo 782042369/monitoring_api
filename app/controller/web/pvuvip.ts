@@ -3,7 +3,7 @@
  * @Author: yanghongxuan
  * @Date: 2021-12-23 17:25:44
  * @LastEditors: yanghongxuan
- * @LastEditTime: 2021-12-31 14:22:20
+ * @LastEditTime: 2021-12-31 14:28:32
  * @Description:
  */
 import * as parser from 'cron-parser'
@@ -194,7 +194,7 @@ export default class Controller extends BaseController {
   // 获得历史概况
   async getHistoryPvUvIplist() {
     const { ctx } = this
-    const query = ctx.rquery
+    const query = ctx.query
     const appId = query.appId
     if (!appId) throw new Error('pvuvip获得历史概况：appId不能为空')
     const result = await ctx.service.web.pvuvip.getHistoryPvUvIplist(appId)
